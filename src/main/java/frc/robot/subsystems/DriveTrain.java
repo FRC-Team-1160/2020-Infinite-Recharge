@@ -7,7 +7,13 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.*;
@@ -16,24 +22,61 @@ public class DriveTrain extends SubsystemBase {
   /**
    * Creates a new DriveTrain.
    */
+  private static DriveTrain instance;
+
   private Talon fL, fR, bL, bR;
+
+  private SpeedControllerGroup left, right;
+
+  private DifferentialDrive mainDrive;
+
+  private AHRS gyro;
+
+  public static DriveTrain getInstance(){
+    if (instance == null){
+      instance = new DriveTrain();
+    }
+    return instance;
+  }
 
   public DriveTrain() {
     fL = new Talon(DriveConstants.FRONT_LEFT_DRIVE);
-    fR = new Talon(DriveConstants.FRONT_RIGHT_DRIVE);
     bL = new Talon(DriveConstants.BACK_LEFT_DRIVE);
+
+    left = new SpeedControllerGroup(fL, bL);
+    
+    fR = new Talon(DriveConstants.FRONT_RIGHT_DRIVE);
     bR = new Talon(DriveConstants.BACK_RIGHT_DRIVE);
+
+    right = new SpeedControllerGroup(fR, bR);
+
+    mainDrive = new DifferentialDrive(left, right);
+
+    gyro = new AHRS(Port.kMXP);
   }
 
+  /*
   public void drive(double left, double right){
     fL.set(left);
     bL.set(left);
     fR.set(right);
     bR.set(right);
+    System.out.println(left);
+    System.out.println(right);
+  }
+  */
+
+  public void tankDrive(double x, double z, double correction){
+    mainDrive.tankDrive(-x+z, -x-z); // x is positive when left joystick pulled down
+  }
+
+  public double getAngle(){
+    return gyro.getYaw();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("angle", getAngle());
   }
 }
