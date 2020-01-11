@@ -8,9 +8,10 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,7 +25,7 @@ public class DriveTrain extends SubsystemBase {
    */
   private static DriveTrain instance;
 
-  private final Talon fL, fR, bL, bR;
+  private final CANSparkMax frontLeft, middleLeft, backLeft, frontRight, middleRight, backRight;
 
   private final SpeedControllerGroup left, right;
 
@@ -40,31 +41,23 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public DriveTrain() {
-    fL = new Talon(DriveConstants.FRONT_LEFT_DRIVE);
-    bL = new Talon(DriveConstants.BACK_LEFT_DRIVE);
-
-    left = new SpeedControllerGroup(fL, bL);
     
-    fR = new Talon(DriveConstants.FRONT_RIGHT_DRIVE);
-    bR = new Talon(DriveConstants.BACK_RIGHT_DRIVE);
+    frontLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
+    middleLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
+    backLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
 
-    right = new SpeedControllerGroup(fR, bR);
+    left = new SpeedControllerGroup(frontLeft, middleLeft, backLeft);
+    
+    frontRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
+    middleRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
+    backRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
+
+    right = new SpeedControllerGroup(frontRight, middleRight, backRight);
 
     mainDrive = new DifferentialDrive(left, right);
 
     gyro = new AHRS(Port.kMXP);
   }
-
-  /*
-  public void drive(double left, double right){
-    fL.set(left);
-    bL.set(left);
-    fR.set(right);
-    bR.set(right);
-    System.out.println(left);
-    System.out.println(right);
-  }
-  */
 
   public void tankDrive(final double x, final double z, final double correction){
     mainDrive.tankDrive(-x+z, -x-z); // x is positive when left joystick pulled down
