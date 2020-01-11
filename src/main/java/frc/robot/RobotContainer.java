@@ -4,11 +4,14 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.*;
+import frc.robot.commands.drive.TurnToAngle;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -36,7 +39,7 @@ public class RobotContainer {
     SendableChooser<Command> m_chooser = new SendableChooser<>();
   
     // The driver's controller
-    public Joystick m_mainStick = new Joystick(OIConstants.mainStickPort);
+    private Joystick m_mainStick = new Joystick(OIConstants.mainStickPort);
   
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -46,7 +49,7 @@ public class RobotContainer {
       configureButtonBindings();
   
       // Configure default commands
-
+      
       m_driveTrain.setDefaultCommand(new RunCommand(
         () -> m_driveTrain.tankDrive((m_mainStick.getRawAxis(1)) , (m_mainStick.getRawAxis(4)), 0.0),
         m_driveTrain)
@@ -70,6 +73,15 @@ public class RobotContainer {
       // Grab the hatch when the 'A' button is pressed.
       // new JoystickButton(m_driverController, Button.kA.value)
           // .whenPressed(new GrabHatch(m_hatchSubsystem));
+      new JoystickButton(m_mainStick, 1)
+        .whenPressed(new SequentialCommandGroup(
+            new InstantCommand(
+              m_driveTrain::resetAngle,
+              m_driveTrain
+            ),
+            new TurnToAngle(m_driveTrain, AutoConstants.TURN_ANGLE)
+          )
+        );
     }
   
   

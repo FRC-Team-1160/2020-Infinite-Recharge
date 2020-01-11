@@ -24,6 +24,7 @@ public final class Constants {
     }
   
     public static final class AutoConstants {
+      public static double TURN_ANGLE = 90;
      
     }
   

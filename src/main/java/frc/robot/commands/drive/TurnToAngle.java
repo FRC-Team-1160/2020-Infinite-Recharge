@@ -22,17 +22,17 @@ public class TurnToAngle extends PIDCommand {
   public TurnToAngle(DriveTrain dt, double angleTarget) {
     super(
         // The controller that the command will use
-        new PIDController(0.2, 0, 0),
+        new PIDController(0, 0, 0),
         // This should return the measurement
         dt::getAngle,
         // This should return the setpoint (can also be a constant)
         angleTarget,
         // This uses the output
-        output -> {}
+        output -> dt.tankDrive(0, output, 0)
         );
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
-    getController().setSetpoint(angleTarget + dt.getAngle());
+
     getController().enableContinuousInput(-180, 180);
     getController().setTolerance(0.5);
     SmartDashboard.putData("Turn", getController());

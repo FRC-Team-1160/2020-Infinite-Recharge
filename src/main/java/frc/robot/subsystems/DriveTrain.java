@@ -24,13 +24,13 @@ public class DriveTrain extends SubsystemBase {
    */
   private static DriveTrain instance;
 
-  private Talon fL, fR, bL, bR;
+  private final Talon fL, fR, bL, bR;
 
-  private SpeedControllerGroup left, right;
+  private final SpeedControllerGroup left, right;
 
-  private DifferentialDrive mainDrive;
+  private final DifferentialDrive mainDrive;
 
-  private AHRS gyro;
+  private final AHRS gyro;
 
   public static DriveTrain getInstance(){
     if (instance == null){
@@ -66,12 +66,16 @@ public class DriveTrain extends SubsystemBase {
   }
   */
 
-  public void tankDrive(double x, double z, double correction){
+  public void tankDrive(final double x, final double z, final double correction){
     mainDrive.tankDrive(-x+z, -x-z); // x is positive when left joystick pulled down
   }
 
   public double getAngle(){
     return gyro.getYaw();
+  }
+
+  public void resetAngle(){
+    gyro.reset();
   }
 
   @Override
