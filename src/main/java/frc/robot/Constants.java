@@ -12,23 +12,15 @@ package frc.robot;
  */
 public final class Constants {
     public static final class DriveConstants {
-        //Talon Rio Ports
-        public static final int BACK_LEFT_DRIVE = 1;
-        public static final int FRONT_LEFT_DRIVE = 2;
-        public static final int BACK_RIGHT_DRIVE = 3;
-        public static final int FRONT_RIGHT_DRIVE = 4;
+
     }
   
-    public static final class HatchConstants {
+  
+    public static final class AutoConstants {
       
     }
   
-    public static final class AutoConstants {
-      public static double TURN_ANGLE = 90;
-     
-    }
-  
     public static final class OIConstants {
-      public static final int mainStickPort = 0;
+
     }
   }

@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.*;
-import frc.robot.commands.drive.TurnToAngle;
-import frc.robot.subsystems.DriveTrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -23,7 +21,7 @@ import frc.robot.subsystems.DriveTrain;
  */
 public class RobotContainer {
     // The robot's subsystems
-    public final DriveTrain m_driveTrain = DriveTrain.getInstance();
+    // public final DriveTrain m_driveTrain = DriveTrain.getInstance();
 
     // The autonomous routines
   
@@ -39,7 +37,7 @@ public class RobotContainer {
     SendableChooser<Command> m_chooser = new SendableChooser<>();
   
     // The driver's controller
-    private Joystick m_mainStick = new Joystick(OIConstants.mainStickPort);
+    // private Joystick m_mainStick = new Joystick(OIConstants.mainStickPort);
   
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -50,11 +48,8 @@ public class RobotContainer {
   
       // Configure default commands
       
-      m_driveTrain.setDefaultCommand(new RunCommand(
-        () -> m_driveTrain.tankDrive((m_mainStick.getRawAxis(1)) , (m_mainStick.getRawAxis(4)), 0.0),
-        m_driveTrain)
-      );
-  
+      // m_driveTrain.setDefaultCommand(command);
+
       // Add commands to the autonomous command chooser
       // m_chooser.addOption("Simple Auto", m_simpleAuto);
       // m_chooser.addOption("Complex Auto", m_complexAuto);
@@ -73,15 +68,6 @@ public class RobotContainer {
       // Grab the hatch when the 'A' button is pressed.
       // new JoystickButton(m_driverController, Button.kA.value)
           // .whenPressed(new GrabHatch(m_hatchSubsystem));
-      new JoystickButton(m_mainStick, 1)
-        .whenPressed(new SequentialCommandGroup(
-            new InstantCommand(
-              m_driveTrain::resetAngle,
-              m_driveTrain
-            ),
-            new TurnToAngle(m_driveTrain, AutoConstants.TURN_ANGLE)
-          )
-        );
     }
   
   
@@ -92,9 +78,5 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
       return m_chooser.getSelected();
-    }
-
-    public Joystick getJoystick(){
-      return m_mainStick;
     }
 }

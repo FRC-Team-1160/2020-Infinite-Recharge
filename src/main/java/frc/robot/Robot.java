@@ -105,7 +105,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putData(m_robotContainer.m_driveTrain);
   }
 
   @Override
