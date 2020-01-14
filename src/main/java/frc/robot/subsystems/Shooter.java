@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -28,18 +29,17 @@ public class Shooter extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
     private static Shooter instance;
-    private WPI_TalonSRX wheel;
+    
+    private final int leftID = 0;
+    private CANSparkMax leftMotor;
+    private final int rightID = 1;
+    private CANSparkMax rightMotor;
 
-    public final PIDController shootController;
+    private CANEncoder leftEncoder;
+    private CANEncoder rightEncoder;
 
-    double kP = 0;
-    double kI = 0;
-    double kD = 0;
-    double minimumInput;
-    double maximumInput;
-    double minimumOutput;
-    double maximumOutput;
-    double positionTolerance;
+    private CANPIDController motorController;
+    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
     public static Shooter GetInstance()
     {
@@ -53,44 +53,62 @@ public class Shooter extends Subsystem {
 
     private Shooter()
     {
-        wheel = new WPI_TalonSRX(SHOOTER_WHEEL1);
-        
-        minimumInput = 0.0f;
-        maximumInput = 5.0f;
-        minimumOutput = -0.45f;
-        maximumOutput = 0.45f;
-        positionTolerance = 0.1f;
-        shootController = new PIDController(kP, kI, kD);
-        shootController.setIntegratorRange(minimumOutput, maximumOutput);
-        shootController.setTolerance(positionTolerance);
+        leftMotor = new CANSparkMax(leftID, MotorType.kBrushed);                // leading spark
+        leftEncoder = leftMotor.getEncoder(EncoderType.kQuadrature, 4096);
+
+        rightMotor = new CANSparkMax(rightID, MotorType.kBrushed);
+        rightEncoder = rightMotor.getEncoder(EncoderType.kQuadrature, 4096);
+
+        setFollower(rightMotor, leftMotor);
+
+        motorController = leftMotor.getPIDController();
+
+        motorController.setFeedbackDevice(leftEncoder);
+
+        // PID coefficients
+        kP = 0.1; 
+        kI = 1e-4;
+        kD = 1; 
+        kIz = 0; 
+        kFF = 0; 
+        kMaxOutput = 1; 
+        kMinOutput = -1;
+
+        // set PID coefficients
+        motorController.setP(kP);
+        motorController.setI(kI);
+        motorController.setD(kD);
+        motorController.setIZone(kIz);
+        motorController.setFF(kFF);
+        motorController.setOutputRange(kMinOutput, kMaxOutput);
     }
 
-    public void shootBottom(double dist, double input)  // shoots for bottom port (2 - 1pts)
+    public void setFollower(CANSparkMax follower, CANSparkMax leader)
     {
-        shoot(dist, input);
+        follower.follow(leader);
+    }
+
+    public void shootBottom(double input)  // shoots for bottom port (2 - 1pts)
+    {
+        // math
+        shoot(input);
     }   
 
-    public void shootOutter(double dist, double input)  // shoots for outter port (4 - 2pts)
+    public void shootOutter(double input)  // shoots for outter port (4 - 2pts)
     {
-        shoot(dist, input);
+        // math
+        shoot(input);
     }
 
-    public void shootInner(double dist, double input)   // shoots for inner port (6 - 3pts)
+    public void shootInner(double input)   // shoots for inner port (6 - 3pts)
     {
-        shoot(dist, input);
+        // math
+        shoot(input);
     }
 
-    private void shoot(double dist, double input)   // enables PID
+    private void shoot(double input)   // enables PID
     {
-        shootController.reset();
-        shootController.setPID(kP, kI, kD);
-        shootController.enableContinuousInput(minimumInput, maximumInput);
-        while (shootController.atSetpoint() == false)
-        {
-            // calculate returns output                                  measurement
-            wheel.set(shootController.calculate(input));
-        }
-        shootController.disableContinuousInput();
+        
     }
 
     public void set(double value)
@@ -100,7 +118,7 @@ public class Shooter extends Subsystem {
 
     public void stop()
     {
-        wheel.set(0);
+        
     }
 
     @Override
