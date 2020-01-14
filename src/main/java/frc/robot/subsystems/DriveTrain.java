@@ -11,6 +11,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -33,6 +34,8 @@ public class DriveTrain extends SubsystemBase {
 
   private final AHRS gyro;
 
+  private Compressor comp;
+
   public static DriveTrain getInstance(){
     if (instance == null){
       instance = new DriveTrain();
@@ -43,20 +46,23 @@ public class DriveTrain extends SubsystemBase {
   public DriveTrain() {
     
     frontLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
-    middleLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
-    backLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
+    middleLeft = new CANSparkMax(DriveConstants.MIDDLE_LEFT_DRIVE, MotorType.kBrushless);
+    backLeft = new CANSparkMax(DriveConstants.BACK_LEFT_DRIVE, MotorType.kBrushless);
 
     left = new SpeedControllerGroup(frontLeft, middleLeft, backLeft);
     
-    frontRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
-    middleRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
-    backRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
+    frontRight = new CANSparkMax(DriveConstants.FRONT_RIGHT_DRIVE, MotorType.kBrushless);
+    middleRight = new CANSparkMax(DriveConstants.MIDDLE_RIGHT_DRIVE, MotorType.kBrushless);
+    backRight = new CANSparkMax(DriveConstants.BACK_RIGHT_DRIVE, MotorType.kBrushless);
 
     right = new SpeedControllerGroup(frontRight, middleRight, backRight);
 
     mainDrive = new DifferentialDrive(left, right);
 
     gyro = new AHRS(Port.kMXP);
+
+    comp = new Compressor(15);
+    comp.start();
   }
 
   public void tankDrive(final double x, final double z, final double correction){
