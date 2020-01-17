@@ -12,7 +12,7 @@ package frc.robot;
  */
 public final class Constants {
     public static final class DriveConstants {
-        //Talon Rio Ports
+        // CAN ID 
         public static final int FRONT_LEFT_DRIVE = 1;
         public static final int MIDDLE_LEFT_DRIVE = 2;
         public static final int BACK_LEFT_DRIVE = 3;
