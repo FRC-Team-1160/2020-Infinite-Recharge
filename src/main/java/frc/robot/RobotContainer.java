@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.*;
-import frc.robot.commands.drive.TurnToAngle;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -78,8 +77,8 @@ public class RobotContainer {
             new InstantCommand(
               m_driveTrain::resetAngle,
               m_driveTrain
-            ),
-            new TurnToAngle(m_driveTrain, AutoConstants.TURN_ANGLE)
+            )//,
+            //new TurnToAngle(m_driveTrain, AutoConstants.TURN_ANGLE)
           )
         );
     }

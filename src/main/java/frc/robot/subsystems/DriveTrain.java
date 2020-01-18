@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 import frc.robot.Constants.*;
 
@@ -34,6 +36,8 @@ public class DriveTrain extends SubsystemBase {
   private final CANSparkMax frontLeft,        middleLeft,        backLeft,        frontRight,        middleRight,        backRight;
   private CANEncoder        frontLeftEncoder, middleLeftEncoder, backLeftEncoder, frontRightEncoder, middleRightEncoder, backRightEncoder;
 
+  private final SpeedControllerGroup left, right;
+  private final DifferentialDrive mainDrive;
   private AHRS gyro;
   private Joystick stick;
 
@@ -65,6 +69,8 @@ public class DriveTrain extends SubsystemBase {
     middleLeftEncoder = middleLeft.getEncoder(EncoderType.kQuadrature, 4096);
     backLeftEncoder = backLeft.getEncoder(EncoderType.kQuadrature, 4096);
     
+    left = new SpeedControllerGroup(frontLeft, middleLeft, backLeft);
+
     frontRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
     middleRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
     backRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);   // leading right spark
@@ -73,8 +79,9 @@ public class DriveTrain extends SubsystemBase {
     middleRightEncoder = middleRight.getEncoder(EncoderType.kQuadrature, 4096);
     backRightEncoder = backRight.getEncoder(EncoderType.kQuadrature, 4096);
 
-    setFollowers(frontLeft, middleLeft, backLeft);
-    setFollowers(frontRight, middleRight, backRight);
+    right = new SpeedControllerGroup(frontRight, middleRight, backRight);
+
+    mainDrive = new DifferentialDrive(left, right);
 
     try {
       gyro = new AHRS(Port.kMXP);
@@ -111,6 +118,10 @@ public class DriveTrain extends SubsystemBase {
   {
     follower1.follow(leader);
     follower2.follow(leader);
+  }
+  
+  public void tankDrive(final double x, final double z, final double correction){
+    mainDrive.tankDrive(x-z, x+z); // x is positive when left joystick pulled down
   }
 
   public double getAngle(){
@@ -160,8 +171,8 @@ public class DriveTrain extends SubsystemBase {
     if (rotateToAngle) {
       turnController.enableContinuousInput(minimumInput, maximumInput);
       rotateToAngleRate = turnController.calculate(gyro.getYaw());
-      backLeft.set(rotateToAngleRate);
-      backRight.set(-rotateToAngleRate);
+      left.set(rotateToAngleRate);
+      right.set(-rotateToAngleRate);
     } else {
       turnController.disableContinuousInput();
       rotateToAngleRate = stick.getTwist();
