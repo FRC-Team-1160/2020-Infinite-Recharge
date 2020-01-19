@@ -65,9 +65,9 @@ public class DriveTrain extends SubsystemBase {
     middleLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
     backLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);    // leading left spark
 
-    frontLeftEncoder = frontLeft.getEncoder(EncoderType.kQuadrature, 4096);
-    middleLeftEncoder = middleLeft.getEncoder(EncoderType.kQuadrature, 4096);
-    backLeftEncoder = backLeft.getEncoder(EncoderType.kQuadrature, 4096);
+    frontLeftEncoder = frontLeft.getEncoder();
+    middleLeftEncoder = middleLeft.getEncoder();
+    backLeftEncoder = backLeft.getEncoder();
     
     left = new SpeedControllerGroup(frontLeft, middleLeft, backLeft);
 
@@ -75,9 +75,9 @@ public class DriveTrain extends SubsystemBase {
     middleRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
     backRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);   // leading right spark
 
-    frontRightEncoder = frontRight.getEncoder(EncoderType.kQuadrature, 4096);
-    middleRightEncoder = middleRight.getEncoder(EncoderType.kQuadrature, 4096);
-    backRightEncoder = backRight.getEncoder(EncoderType.kQuadrature, 4096);
+    frontRightEncoder = frontRight.getEncoder();
+    middleRightEncoder = middleRight.getEncoder();
+    backRightEncoder = backRight.getEncoder();
 
     right = new SpeedControllerGroup(frontRight, middleRight, backRight);
 
@@ -89,29 +89,29 @@ public class DriveTrain extends SubsystemBase {
       DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
     }
 
-    stick = new Joystick(0);
+    // stick = new Joystick(0);
 
-    kP = 0.1; 
-    kI = 1e-4;
-    kD = 1;
+    // kP = 0.1; 
+    // kI = 1e-4;
+    // kD = 1;
 
-    minimumInput = -180.0f;
-    maximumInput = 180.0f;
-    minimumIntegral = -1.0;
-    maximumIntegral = 1.0;
-    kToleranceDegrees = 0.5;
+    // minimumInput = -180.0f;
+    // maximumInput = 180.0f;
+    // minimumIntegral = -1.0;
+    // maximumIntegral = 1.0;
+    // kToleranceDegrees = 0.5;
 
-    turnController = new PIDController(kP, kI, kD);
-    turnController.setIntegratorRange(minimumIntegral, maximumIntegral);
-    turnController.setTolerance(kToleranceDegrees);
+    // turnController = new PIDController(kP, kI, kD);
+    // turnController.setIntegratorRange(minimumIntegral, maximumIntegral);
+    // turnController.setTolerance(kToleranceDegrees);
 
-    // display PID coefficients on SmartDashboard
-    SmartDashboard.putNumber("P Gain", kP);
-    SmartDashboard.putNumber("I Gain", kI);
-    SmartDashboard.putNumber("D Gain", kD);
-    SmartDashboard.putNumber("Min Output", minimumIntegral);
-    SmartDashboard.putNumber("Max Output", maximumIntegral);
-    SmartDashboard.putNumber("Set Angle", 90);
+    // // display PID coefficients on SmartDashboard
+    // SmartDashboard.putNumber("P Gain", kP);
+    // SmartDashboard.putNumber("I Gain", kI);
+    // SmartDashboard.putNumber("D Gain", kD);
+    // SmartDashboard.putNumber("Min Output", minimumIntegral);
+    // SmartDashboard.putNumber("Max Output", maximumIntegral);
+    // SmartDashboard.putNumber("Set Angle", 90);
   }
 
   public void setFollowers(CANSparkMax follower1, CANSparkMax follower2, CANSparkMax leader)
@@ -136,46 +136,46 @@ public class DriveTrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // read PID coefficients from SmartDashboards
-    double p = SmartDashboard.getNumber("P Gain", 0);
-    double i = SmartDashboard.getNumber("I Gain", 0);
-    double d = SmartDashboard.getNumber("D Gain", 0);
-    double iz = SmartDashboard.getNumber("I Zone", 0);
-    double ff = SmartDashboard.getNumber("Feed Forward", 0);
-    double max = SmartDashboard.getNumber("Max Output", 0);
-    double min = SmartDashboard.getNumber("Min Output", 0);
-    double angle = SmartDashboard.getNumber("Set Angle", 0);
+    // double p = SmartDashboard.getNumber("P Gain", 0);
+    // double i = SmartDashboard.getNumber("I Gain", 0);
+    // double d = SmartDashboard.getNumber("D Gain", 0);
+    // double iz = SmartDashboard.getNumber("I Zone", 0);
+    // double ff = SmartDashboard.getNumber("Feed Forward", 0);
+    // double max = SmartDashboard.getNumber("Max Output", 0);
+    // double min = SmartDashboard.getNumber("Min Output", 0);
+    // double angle = SmartDashboard.getNumber("Set Angle", 0);
 
-    // if PID coefficients on SmartDashboard have changed, write new values
-    if((p != kP)) { kP = p; }
-    if((i != kI)) { kI = i; }
-    if((d != kD)) { kD = d; }
+    // // if PID coefficients on SmartDashboard have changed, write new values
+    // if((p != kP)) { kP = p; }
+    // if((i != kI)) { kI = i; }
+    // if((d != kD)) { kD = d; }
 
-    boolean rotateToAngle = false;
-    if (stick.getRawButton(1)) {
-      gyro.reset();
-    }
-    if (stick.getRawButton(2)) {
-      turnController.setSetpoint(0.0f);
-      rotateToAngle = true;
-    } else if (stick.getRawButton(3)) {
-      turnController.setSetpoint(90.0f);
-      rotateToAngle = true;
-    } else if (stick.getRawButton(4)) {
-      turnController.setSetpoint(179.9f);
-      rotateToAngle = true;
-    } else if (stick.getRawButton(5)) {
-      turnController.setSetpoint(-90.0f);
-      rotateToAngle = true;
-    }
+    // boolean rotateToAngle = false;
+    // if (stick.getRawButton(1)) {
+    //   gyro.reset();
+    // }
+    // if (stick.getRawButton(2)) {
+    //   turnController.setSetpoint(0.0f);
+    //   rotateToAngle = true;
+    // } else if (stick.getRawButton(3)) {
+    //   turnController.setSetpoint(90.0f);
+    //   rotateToAngle = true;
+    // } else if (stick.getRawButton(4)) {
+    //   turnController.setSetpoint(179.9f);
+    //   rotateToAngle = true;
+    // } else if (stick.getRawButton(5)) {
+    //   turnController.setSetpoint(-90.0f);
+    //   rotateToAngle = true;
+    // }
 
-    if (rotateToAngle) {
-      turnController.enableContinuousInput(minimumInput, maximumInput);
-      rotateToAngleRate = turnController.calculate(gyro.getYaw());
-      left.set(rotateToAngleRate);
-      right.set(-rotateToAngleRate);
-    } else {
-      turnController.disableContinuousInput();
-      rotateToAngleRate = stick.getTwist();
-    }
+    // if (rotateToAngle) {
+    //   turnController.enableContinuousInput(minimumInput, maximumInput);
+    //   rotateToAngleRate = turnController.calculate(gyro.getYaw());
+    //   left.set(rotateToAngleRate);
+    //   right.set(-rotateToAngleRate);
+    // } else {
+    //   turnController.disableContinuousInput();
+    //   rotateToAngleRate = stick.getTwist();
+    // }
   }
 }
