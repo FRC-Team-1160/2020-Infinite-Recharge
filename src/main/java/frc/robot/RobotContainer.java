@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -73,12 +74,10 @@ public class RobotContainer {
       // new JoystickButton(m_driverController, Button.kA.value)
           // .whenPressed(new GrabHatch(m_hatchSubsystem));
       new JoystickButton(m_mainStick, 1)
-        .whenPressed(new SequentialCommandGroup(
-            new InstantCommand(
-              m_driveTrain::resetAngle,
-              m_driveTrain
-            )//,
-            //new TurnToAngle(m_driveTrain, AutoConstants.TURN_ANGLE)
+        .whenPressed(
+          new SequentialCommandGroup(
+            //             PID Controller               Double Supplier     Setpoint      Double Consumer     Requirement
+            new PIDCommand(m_driveTrain.turnController, m_driveTrain,       90.0f,        m_driveTrain,       m_driveTrain)
           )
         );
     }

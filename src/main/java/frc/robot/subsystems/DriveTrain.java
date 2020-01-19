@@ -7,6 +7,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import com.revrobotics.CANSparkMax;
@@ -27,7 +30,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 import frc.robot.Constants.*;
 
-public class DriveTrain extends SubsystemBase {
+public class DriveTrain extends SubsystemBase implements DoubleSupplier, DoubleConsumer {
   /**
    * Creates a new DriveTrain.
    */
@@ -38,11 +41,9 @@ public class DriveTrain extends SubsystemBase {
 
   private final SpeedControllerGroup left, right;
   private final DifferentialDrive mainDrive;
-  private AHRS gyro;
-  private Joystick stick;
+  public AHRS gyro;
 
   public PIDController turnController;
-  private CANPIDController leftPIDController;
   public double kP, kI, kD, kF;
   public double minimumInput, maximumInput;
   public double minimumIntegral, maximumIntegral;
@@ -89,21 +90,21 @@ public class DriveTrain extends SubsystemBase {
       DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
     }
 
-    // stick = new Joystick(0);
+    resetAngle();
 
-    // kP = 0.1; 
-    // kI = 1e-4;
-    // kD = 1;
+    kP = 0.1; 
+    kI = 1e-4;
+    kD = 1;
 
-    // minimumInput = -180.0f;
-    // maximumInput = 180.0f;
-    // minimumIntegral = -1.0;
-    // maximumIntegral = 1.0;
-    // kToleranceDegrees = 0.5;
+    minimumInput = -180.0f;
+    maximumInput = 180.0f;
+    minimumIntegral = -1.0;
+    maximumIntegral = 1.0;
+    kToleranceDegrees = 0.5;
 
-    // turnController = new PIDController(kP, kI, kD);
-    // turnController.setIntegratorRange(minimumIntegral, maximumIntegral);
-    // turnController.setTolerance(kToleranceDegrees);
+    turnController = new PIDController(kP, kI, kD);
+    turnController.setIntegratorRange(minimumIntegral, maximumIntegral);
+    turnController.setTolerance(kToleranceDegrees);
 
     // // display PID coefficients on SmartDashboard
     // SmartDashboard.putNumber("P Gain", kP);
@@ -113,27 +114,31 @@ public class DriveTrain extends SubsystemBase {
     // SmartDashboard.putNumber("Max Output", maximumIntegral);
     // SmartDashboard.putNumber("Set Angle", 90);
   }
-
-  public void setFollowers(CANSparkMax follower1, CANSparkMax follower2, CANSparkMax leader)
-  {
-    follower1.follow(leader);
-    follower2.follow(leader);
-  }
   
   public void tankDrive(final double x, final double z, final double correction){
     mainDrive.tankDrive(x-z, x+z); // x is positive when left joystick pulled down
-  }
-
-  public double getAngle(){
-    return gyro.getYaw();
   }
 
   public void resetAngle(){
     gyro.reset();
   }
 
+  // implements getAsDouble function from Double Supplier (needed for PIDCommand)
+  public double getAsDouble() // AKA getYaw bois
+  {
+    return gyro.getYaw();
+  }
+
+  // implements accept function from Double Consumer (needed for PIDCommand)
+  public void accept(double voltage) // moves each gearbox accordingly
+  {
+    left.set(voltage);
+    right.set(-voltage);
+  }
+
   @Override
   public void periodic() {
+    System.out.println("periodic");
     // This method will be called once per scheduler run
     // read PID coefficients from SmartDashboards
     // double p = SmartDashboard.getNumber("P Gain", 0);
