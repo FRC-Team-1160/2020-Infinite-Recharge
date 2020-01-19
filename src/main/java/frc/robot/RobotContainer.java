@@ -50,7 +50,7 @@ public class RobotContainer {
       // Configure default commands
       
       m_driveTrain.setDefaultCommand(new RunCommand(
-        () -> m_driveTrain.tankDrive((m_mainStick.getRawAxis(1)) , (m_mainStick.getRawAxis(4)), 0.0),
+        () -> m_driveTrain.tankDrive(0.75*(m_mainStick.getRawAxis(1)) , 0.75*(m_mainStick.getRawAxis(4)), 0.0),
         m_driveTrain)
       );
   

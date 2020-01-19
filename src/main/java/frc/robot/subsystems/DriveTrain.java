@@ -62,8 +62,8 @@ public class DriveTrain extends SubsystemBase {
   public DriveTrain() {
 
     frontLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
-    middleLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
-    backLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);    // leading left spark
+    middleLeft = new CANSparkMax(DriveConstants.MIDDLE_LEFT_DRIVE, MotorType.kBrushless);
+    backLeft = new CANSparkMax(DriveConstants.BACK_LEFT_DRIVE, MotorType.kBrushless);    // leading left spark
 
     frontLeftEncoder = frontLeft.getEncoder();
     middleLeftEncoder = middleLeft.getEncoder();
@@ -71,9 +71,9 @@ public class DriveTrain extends SubsystemBase {
     
     left = new SpeedControllerGroup(frontLeft, middleLeft, backLeft);
 
-    frontRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
-    middleRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
-    backRight = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);   // leading right spark
+    frontRight = new CANSparkMax(DriveConstants.FRONT_RIGHT_DRIVE, MotorType.kBrushless);
+    middleRight = new CANSparkMax(DriveConstants.MIDDLE_RIGHT_DRIVE, MotorType.kBrushless);
+    backRight = new CANSparkMax(DriveConstants.BACK_RIGHT_DRIVE, MotorType.kBrushless);   // leading right spark
 
     frontRightEncoder = frontRight.getEncoder();
     middleRightEncoder = middleRight.getEncoder();
