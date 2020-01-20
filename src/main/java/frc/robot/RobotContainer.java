@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.*;
+import frc.robot.commands.drive.TurnToAngle;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -77,7 +78,8 @@ public class RobotContainer {
         .whenPressed(
           new SequentialCommandGroup(
             //             PID Controller               Double Supplier     Setpoint      Double Consumer     Requirement
-            new PIDCommand(m_driveTrain.turnController, m_driveTrain,       90.0f,        m_driveTrain,       m_driveTrain)
+            //new PIDCommand(m_driveTrain.turnController, m_driveTrain,       90.0f,        m_driveTrain,       m_driveTrain);
+            new TurnToAngle(m_driveTrain)
           )
         );
     }

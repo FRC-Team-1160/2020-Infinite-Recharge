@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 import frc.robot.Constants.*;
 
-public class DriveTrain extends SubsystemBase implements DoubleSupplier, DoubleConsumer {
+public class DriveTrain extends SubsystemBase{
   /**
    * Creates a new DriveTrain.
    */
@@ -90,11 +90,9 @@ public class DriveTrain extends SubsystemBase implements DoubleSupplier, DoubleC
       DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
     }
 
-    resetAngle();
-
-    kP = 0.1; 
-    kI = 1e-4;
-    kD = 1;
+    kP = 0.001; 
+    kI = 0;
+    kD = 0;
 
     minimumInput = -180.0f;
     maximumInput = 180.0f;
@@ -103,8 +101,10 @@ public class DriveTrain extends SubsystemBase implements DoubleSupplier, DoubleC
     kToleranceDegrees = 0.5;
 
     turnController = new PIDController(kP, kI, kD);
+    turnController.enableContinuousInput(minimumInput, maximumInput);
     turnController.setIntegratorRange(minimumIntegral, maximumIntegral);
     turnController.setTolerance(kToleranceDegrees);
+    turnController.setSetpoint(0);
 
     // // display PID coefficients on SmartDashboard
     // SmartDashboard.putNumber("P Gain", kP);
@@ -113,18 +113,19 @@ public class DriveTrain extends SubsystemBase implements DoubleSupplier, DoubleC
     // SmartDashboard.putNumber("Min Output", minimumIntegral);
     // SmartDashboard.putNumber("Max Output", maximumIntegral);
     // SmartDashboard.putNumber("Set Angle", 90);
+    SmartDashboard.putData(turnController);
   }
   
   public void tankDrive(final double x, final double z, final double correction){
     mainDrive.tankDrive(x-z, x+z); // x is positive when left joystick pulled down
   }
 
-  public void resetAngle(){
+  public void resetYaw(){
     gyro.reset();
   }
 
   // implements getAsDouble function from Double Supplier (needed for PIDCommand)
-  public double getAsDouble() // AKA getYaw bois
+  public double getYaw() // AKA getYaw bois
   {
     return gyro.getYaw();
   }
@@ -133,54 +134,11 @@ public class DriveTrain extends SubsystemBase implements DoubleSupplier, DoubleC
   public void accept(double voltage) // moves each gearbox accordingly
   {
     left.set(voltage);
-    right.set(-voltage);
+    right.set(voltage);
   }
 
   @Override
   public void periodic() {
-    System.out.println("periodic");
-    // This method will be called once per scheduler run
-    // read PID coefficients from SmartDashboards
-    // double p = SmartDashboard.getNumber("P Gain", 0);
-    // double i = SmartDashboard.getNumber("I Gain", 0);
-    // double d = SmartDashboard.getNumber("D Gain", 0);
-    // double iz = SmartDashboard.getNumber("I Zone", 0);
-    // double ff = SmartDashboard.getNumber("Feed Forward", 0);
-    // double max = SmartDashboard.getNumber("Max Output", 0);
-    // double min = SmartDashboard.getNumber("Min Output", 0);
-    // double angle = SmartDashboard.getNumber("Set Angle", 0);
-
-    // // if PID coefficients on SmartDashboard have changed, write new values
-    // if((p != kP)) { kP = p; }
-    // if((i != kI)) { kI = i; }
-    // if((d != kD)) { kD = d; }
-
-    // boolean rotateToAngle = false;
-    // if (stick.getRawButton(1)) {
-    //   gyro.reset();
-    // }
-    // if (stick.getRawButton(2)) {
-    //   turnController.setSetpoint(0.0f);
-    //   rotateToAngle = true;
-    // } else if (stick.getRawButton(3)) {
-    //   turnController.setSetpoint(90.0f);
-    //   rotateToAngle = true;
-    // } else if (stick.getRawButton(4)) {
-    //   turnController.setSetpoint(179.9f);
-    //   rotateToAngle = true;
-    // } else if (stick.getRawButton(5)) {
-    //   turnController.setSetpoint(-90.0f);
-    //   rotateToAngle = true;
-    // }
-
-    // if (rotateToAngle) {
-    //   turnController.enableContinuousInput(minimumInput, maximumInput);
-    //   rotateToAngleRate = turnController.calculate(gyro.getYaw());
-    //   left.set(rotateToAngleRate);
-    //   right.set(-rotateToAngleRate);
-    // } else {
-    //   turnController.disableContinuousInput();
-    //   rotateToAngleRate = stick.getTwist();
-    // }
+    SmartDashboard.putNumber("Number: ", gyro.getYaw());
   }
 }
