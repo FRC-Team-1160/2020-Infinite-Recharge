@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -55,7 +56,7 @@ public class RobotContainer {
       // Configure default commands
       
       m_driveTrain.setDefaultCommand(new RunCommand(
-        () -> m_driveTrain.tankDrive((m_mainStick.getRawAxis(1)) , (m_mainStick.getRawAxis(4)), 0.0),
+        () -> m_driveTrain.tankDrive(0.75*(m_mainStick.getRawAxis(1)) , 0.75*(m_mainStick.getRawAxis(4)), 0.0),
         m_driveTrain)
       );
   
@@ -77,6 +78,14 @@ public class RobotContainer {
       // Grab the hatch when the 'A' button is pressed.
       // new JoystickButton(m_driverController, Button.kA.value)
           // .whenPressed(new GrabHatch(m_hatchSubsystem));
+      new JoystickButton(m_mainStick, 1)
+        .whenPressed(
+          new SequentialCommandGroup(
+            //             PID Controller               Double Supplier     Setpoint      Double Consumer     Requirement
+            //new PIDCommand(m_driveTrain.turnController, m_driveTrain,       90.0f,        m_driveTrain,       m_driveTrain);
+            new TurnToAngle(m_driveTrain)
+          )
+        );
     }
   
   

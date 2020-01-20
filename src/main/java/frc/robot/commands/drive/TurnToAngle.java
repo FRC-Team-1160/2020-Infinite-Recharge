@@ -7,40 +7,36 @@
 
 package frc.robot.commands.drive;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.DriveTrain;
 
-public class TurnToAngle extends CommandBase {
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
+public class TurnToAngle extends PIDCommand {
   /**
    * Creates a new TurnToAngle.
    */
-
-  private DriveTrain m_dt;
-
-  public TurnToAngle(DriveTrain dt){
+  // new PIDCommand(m_driveTrain.turnController, m_driveTrain,       90.0f,        m_driveTrain,       m_driveTrain);
+  public TurnToAngle(DriveTrain dt) {
+    super(
+        // The controller that the command will use
+        dt.turnController,
+        // This should return the measurement
+        () -> dt.getYaw(),
+        // This should return the setpoint (can also be a constant)
+        () -> dt.turnController.getSetpoint(),
+        // This uses the output
+        output -> dt.accept(output)
+        );
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_dt =  dt;
-    addRequirements(m_dt);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
+    // Configure additional PID options by calling `getController` here.
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return getController().atSetpoint();
   }
 }
