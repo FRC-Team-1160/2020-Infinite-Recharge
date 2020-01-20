@@ -18,7 +18,8 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
-
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,6 +54,8 @@ public class DriveTrain extends SubsystemBase{
   public double rotateToAngleRate;
   
 
+  private Compressor comp;
+
   public static DriveTrain getInstance(){
     if (instance == null){
       instance = new DriveTrain();
@@ -84,11 +87,13 @@ public class DriveTrain extends SubsystemBase{
 
     mainDrive = new DifferentialDrive(left, right);
 
-    try {
-      gyro = new AHRS(Port.kMXP);
-    } catch (RuntimeException ex) {
-      DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
-    }
+
+    gyro = new AHRS(Port.kMXP);
+
+    comp = new Compressor(15);
+    comp.start();
+  }
+
 
     kP = 0.001; 
     kI = 0;

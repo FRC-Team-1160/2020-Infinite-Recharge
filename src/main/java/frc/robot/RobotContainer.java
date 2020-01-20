@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.*;
-import frc.robot.commands.drive.TurnToAngle;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -25,6 +25,10 @@ import frc.robot.subsystems.DriveTrain;
 public class RobotContainer {
     // The robot's subsystems
     public final DriveTrain m_driveTrain = DriveTrain.getInstance();
+
+    // public final Vision m_vision = Vision.getInstance();
+
+    public final Vision limelight = Vision.getInstance();
 
     // The autonomous routines
   
@@ -92,9 +96,5 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
       return m_chooser.getSelected();
-    }
-
-    public Joystick getJoystick(){
-      return m_mainStick;
     }
 }
