@@ -5,15 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.Lift;
 
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Drive extends SubsystemBase {
+import frc.robot.Constants.*;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Lift extends SubsystemBase {
   /**
-   * Creates a new Drive.
+   * Creates a new ExampleSubsystem.
    */
-  public Drive() {
+  public Lift() {
 
   }
 
