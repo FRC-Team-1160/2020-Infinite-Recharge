@@ -28,8 +28,14 @@ public final class Constants {
     }
   
     public static final class AutoConstants {
-      public static double TURN_ANGLE = 90;
-     
+      public static double TURN_KP = 0.021;
+      public static double TURN_KI = 0.0;
+      public static double TURN_KD = 0.0;
+      public static double MIN_INPUT = -180.0f;
+      public static double MAX_INPUT = 180.0f;
+      public static double MIN_INGL = -1.0;
+      public static double MAX_INGL = 1.0;
+      public static double TOLERANCE = 0.1;
     }
   
     public static final class OIConstants {

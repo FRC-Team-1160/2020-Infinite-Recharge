@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
@@ -38,21 +39,12 @@ public class DriveTrain extends SubsystemBase{
   private static DriveTrain instance;
 
   private final CANSparkMax frontLeft,        middleLeft,        backLeft,        frontRight,        middleRight,        backRight;
-  private CANEncoder        frontLeftEncoder, middleLeftEncoder, backLeftEncoder, frontRightEncoder, middleRightEncoder, backRightEncoder;
+  // private CANEncoder        frontLeftEncoder, middleLeftEncoder, backLeftEncoder, frontRightEncoder, middleRightEncoder, backRightEncoder;
 
-  private final SpeedControllerGroup left, right;
   private final DifferentialDrive mainDrive;
   public AHRS gyro;
 
   public PIDController turnController;
-  public double kP, kI, kD, kF;
-  public double minimumInput, maximumInput;
-  public double minimumIntegral, maximumIntegral;
-  public double kToleranceDegrees;
-
-  public boolean rotateToAngle;
-  public double rotateToAngleRate;
-  
 
   private Compressor comp;
 
@@ -67,58 +59,34 @@ public class DriveTrain extends SubsystemBase{
 
     frontLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
     middleLeft = new CANSparkMax(DriveConstants.MIDDLE_LEFT_DRIVE, MotorType.kBrushless);
-    backLeft = new CANSparkMax(DriveConstants.BACK_LEFT_DRIVE, MotorType.kBrushless);    // leading left spark
+    backLeft = new CANSparkMax(DriveConstants.BACK_LEFT_DRIVE, MotorType.kBrushless);    
 
-    frontLeftEncoder = frontLeft.getEncoder();
-    middleLeftEncoder = middleLeft.getEncoder();
-    backLeftEncoder = backLeft.getEncoder();
+    frontLeft.follow(backLeft);
+    middleLeft.follow(backLeft);
     
-    left = new SpeedControllerGroup(frontLeft, middleLeft, backLeft);
-
     frontRight = new CANSparkMax(DriveConstants.FRONT_RIGHT_DRIVE, MotorType.kBrushless);
     middleRight = new CANSparkMax(DriveConstants.MIDDLE_RIGHT_DRIVE, MotorType.kBrushless);
-    backRight = new CANSparkMax(DriveConstants.BACK_RIGHT_DRIVE, MotorType.kBrushless);   // leading right spark
+    backRight = new CANSparkMax(DriveConstants.BACK_RIGHT_DRIVE, MotorType.kBrushless);   
 
-    frontRightEncoder = frontRight.getEncoder();
-    middleRightEncoder = middleRight.getEncoder();
-    backRightEncoder = backRight.getEncoder();
+    frontRight.follow(backRight);
+    middleRight.follow(backRight);
 
-    right = new SpeedControllerGroup(frontRight, middleRight, backRight);
-
-    mainDrive = new DifferentialDrive(left, right);
-
+    mainDrive = new DifferentialDrive(backLeft, backRight);
 
     gyro = new AHRS(Port.kMXP);
 
     comp = new Compressor(15);
     comp.start();
-  }
+ 
+    // SmartDashboard.putData("PDP", new PowerDistributionPanel(15));
 
-
-    kP = 0.001; 
-    kI = 0;
-    kD = 0;
-
-    minimumInput = -180.0f;
-    maximumInput = 180.0f;
-    minimumIntegral = -1.0;
-    maximumIntegral = 1.0;
-    kToleranceDegrees = 0.5;
-
-    turnController = new PIDController(kP, kI, kD);
-    turnController.enableContinuousInput(minimumInput, maximumInput);
-    turnController.setIntegratorRange(minimumIntegral, maximumIntegral);
-    turnController.setTolerance(kToleranceDegrees);
+    turnController = new PIDController(AutoConstants.TURN_KP, AutoConstants.TURN_KI, AutoConstants.TURN_KD);
+    turnController.enableContinuousInput(AutoConstants.MIN_INPUT, AutoConstants.MAX_INPUT);
+    turnController.setIntegratorRange(AutoConstants.MIN_INGL, AutoConstants.MAX_INGL);
+    turnController.setTolerance(AutoConstants.TOLERANCE);
     turnController.setSetpoint(0);
 
-    // // display PID coefficients on SmartDashboard
-    // SmartDashboard.putNumber("P Gain", kP);
-    // SmartDashboard.putNumber("I Gain", kI);
-    // SmartDashboard.putNumber("D Gain", kD);
-    // SmartDashboard.putNumber("Min Output", minimumIntegral);
-    // SmartDashboard.putNumber("Max Output", maximumIntegral);
-    // SmartDashboard.putNumber("Set Angle", 90);
-    SmartDashboard.putData(turnController);
+    SmartDashboard.putData("Turn Controller", turnController);
   }
   
   public void tankDrive(final double x, final double z, final double correction){

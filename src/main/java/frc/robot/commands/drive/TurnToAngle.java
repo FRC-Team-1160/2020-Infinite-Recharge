@@ -10,6 +10,7 @@ package frc.robot.commands.drive;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Vision;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -26,7 +27,7 @@ public class TurnToAngle extends PIDCommand {
         // This should return the measurement
         () -> dt.getYaw(),
         // This should return the setpoint (can also be a constant)
-        () -> dt.turnController.getSetpoint(),
+        () -> (dt.getYaw() - Vision.getTx()),
         // This uses the output
         output -> dt.accept(output)
         );
