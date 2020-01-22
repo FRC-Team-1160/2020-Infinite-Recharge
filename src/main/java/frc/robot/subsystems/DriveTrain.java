@@ -1,3 +1,4 @@
+  
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
@@ -106,8 +107,8 @@ public class DriveTrain extends SubsystemBase{
   // implements accept function from Double Consumer (needed for PIDCommand)
   public void accept(double voltage) // moves each gearbox accordingly
   {
-    left.set(voltage);
-    right.set(voltage);
+    backLeft.set(voltage);
+    backRight.set(voltage);
   }
 
   @Override
