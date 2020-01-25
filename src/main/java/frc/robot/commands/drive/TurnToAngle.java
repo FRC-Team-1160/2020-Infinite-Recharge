@@ -23,11 +23,26 @@ public class TurnToAngle extends PIDCommand {
   public TurnToAngle(DriveTrain dt) {
     super(
         // The controller that the command will use
-        dt.turnController,
+        dt.m_turnController,
         // This should return the measurement
         () -> dt.getYaw(),
         // This should return the setpoint (can also be a constant)
         () -> (dt.getYaw() - Vision.getTx()),
+        // This uses the output
+        output -> dt.accept(output)
+        );
+    // Use addRequirements() here to declare subsystem dependencies.
+    // Configure additional PID options by calling `getController` here.
+  }
+
+  public TurnToAngle(DriveTrain dt, double setpoint) {
+    super(
+        // The controller that the command will use
+        dt.m_turnController,
+        // This should return the measurement
+        () -> dt.getYaw(),
+        // This should return the setpoint (can also be a constant)
+        () -> (dt.getYaw() - setpoint),
         // This uses the output
         output -> dt.accept(output)
         );

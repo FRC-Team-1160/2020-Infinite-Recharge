@@ -11,34 +11,39 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final class DriveConstants {
-        // CAN ID 
-        public static final int FRONT_LEFT_DRIVE = 1;
-        public static final int MIDDLE_LEFT_DRIVE = 2;
-        public static final int BACK_LEFT_DRIVE = 3;
+  // Units are m kg s unless otherwise specified
+  public static final class DriveConstants {
+    // CAN ID 
+    public static final int FRONT_LEFT_DRIVE = 1;
+    public static final int MIDDLE_LEFT_DRIVE = 2;
+    public static final int BACK_LEFT_DRIVE = 3;
 
-        public static final int FRONT_RIGHT_DRIVE = 4;
-        public static final int MIDDLE_RIGHT_DRIVE = 5;
-        public static final int BACK_RIGHT_DRIVE = 6;
+    public static final int FRONT_RIGHT_DRIVE = 4;
+    public static final int MIDDLE_RIGHT_DRIVE = 5;
+    public static final int BACK_RIGHT_DRIVE = 6;
 
-    }
-  
-    public static final class HatchConstants {
-      
-    }
-  
-    public static final class AutoConstants {
-      public static double TURN_KP = 0.021;
-      public static double TURN_KI = 0.0;
-      public static double TURN_KD = 0.0;
-      public static double MIN_INPUT = -180.0f;
-      public static double MAX_INPUT = 180.0f;
-      public static double MIN_INGL = -1.0;
-      public static double MAX_INGL = 1.0;
-      public static double TOLERANCE = 0.1;
-    }
-  
-    public static final class OIConstants {
-      public static final int mainStickPort = 0;
-    }
+    public static final int SPINNER = 0;
   }
+
+  public static final class FieldConstants {
+    public static double INNER_PORT_HEIGHT = 1.88976; // meters
+  }
+
+  public static final class AutoConstants {
+    public static double TURN_KP = 0.021;
+    public static double TURN_KI = 0.0;
+    public static double TURN_KD = 0.0;
+    public static final double MIN_INPUT = -180.0f;
+    public static final double MAX_INPUT = 180.0f;
+    public static final double MIN_INGL = -1.0;
+    public static final double MAX_INGL = 1.0;
+    public static final double TOLERANCE = 0.1;
+
+    public static double ROTATION_SPEED = 0.25;
+    public static double POSITION_SPEED = 0.15;
+  }
+
+  public static final class OIConstants {
+    public static final int mainStickPort = 0;
+  }
+}
