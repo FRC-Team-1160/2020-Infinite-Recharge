@@ -8,15 +8,16 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
@@ -26,10 +27,8 @@ public class DriveTrain extends SubsystemBase{
    */
   private static DriveTrain m_instance;
 
-  private final CANSparkMax m_frontLeft,        m_middleLeft,        m_backLeft,        m_frontRight,        m_middleRight,        m_backRight;
-  // private CANEncoder        frontLeftEncoder, middleLeftEncoder, backLeftEncoder, frontRightEncoder, middleRightEncoder, backRightEncoder;
-
-  double d;
+  private final CANSparkMax m_frontLeft, m_middleLeft, m_backLeft, m_frontRight, m_middleRight, m_backRight;
+  private CANEncoder m_leftEncoder, m_rightEncoder;
 
   private final DifferentialDrive m_mainDrive;
 
@@ -37,7 +36,7 @@ public class DriveTrain extends SubsystemBase{
 
   public PIDController m_turnController;
 
-  private Compressor m_comp;
+  // private Compressor m_comp;
 
   public static DriveTrain getInstance(){
     if (m_instance == null){
@@ -65,13 +64,7 @@ public class DriveTrain extends SubsystemBase{
     m_mainDrive = new DifferentialDrive(m_backLeft, m_backRight);
 
     m_gyro = new AHRS(Port.kMXP);
-
-    m_comp = new Compressor(15);
-    m_comp.start();
  
-    d = 10;
-    SmartDashboard.putNumber("Input d:", d);
-
     m_turnController = new PIDController(AutoConstants.TURN_KP, AutoConstants.TURN_KI, AutoConstants.TURN_KD);
     m_turnController.enableContinuousInput(AutoConstants.MIN_INPUT, AutoConstants.MAX_INPUT);
     m_turnController.setIntegratorRange(AutoConstants.MIN_INGL, AutoConstants.MAX_INGL);
@@ -82,7 +75,7 @@ public class DriveTrain extends SubsystemBase{
   }
   
   public void tankDrive(final double x, final double z, final double correction){
-    m_mainDrive.tankDrive(x-z, x+z); // x is positive when left joystick pulled down
+    m_mainDrive.tankDrive(-x+z, -x-z); // x is positive when left joystick pulled down
   }
 
   public void resetYaw(){
@@ -97,27 +90,14 @@ public class DriveTrain extends SubsystemBase{
     return m_gyro.getPitch();
   }
 
-  public double getHeight(){
-    double a1 = getPitch();
-    double a2 = Vision.getTy();
-    double angle = Math.toRadians(a2+a1);
-    double height = d*Math.tan(angle);
-    SmartDashboard.putNumber("angle", angle);
-    SmartDashboard.putNumber("tan", Math.tan(angle));
-    SmartDashboard.putNumber("height", height);
-    return height;
-  }
-
   public void accept(double voltage) // moves each gearbox accordingly
   {
-    voltage = Math.max(-0.5, Math.min(voltage, 0.5));
+    voltage = MathUtil.clamp(voltage, -0.5, 0.5);
     m_backLeft.setVoltage(voltage);
     m_backRight.setVoltage(voltage);
   }
 
   @Override
   public void periodic() {
-    d = SmartDashboard.getNumber("Input d:", 0.0);
-    getHeight();
   }
 }

@@ -22,14 +22,33 @@ public final class Constants {
     public static final int MIDDLE_RIGHT_DRIVE = 5;
     public static final int BACK_RIGHT_DRIVE = 6;
 
-    public static final int SPINNER = 0;
+    public static final int SPINNER = 7;
+
+    public static final int x = 8;
+    public static final int y = 9;
+    public static final int z = 10;
+    public static final int a = 11;
+    public static final int b = 12;
+    public static final int c = 13;
   }
 
   public static final class FieldConstants {
     public static double INNER_PORT_HEIGHT = 1.88976; // meters
+    public static double LIMELIGHT_HEIGHT = 0; // meters
+    public static double RELATIVE_INNER_PORT_HEIGHT = INNER_PORT_HEIGHT - LIMELIGHT_HEIGHT;
+  }
+
+  public static final class VisionConstants {
+    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES = 0;
+    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_RADIANS = Math.toRadians(LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES);
   }
 
   public static final class AutoConstants {
+
+    // Drive
+
+
+    // Turn
     public static double TURN_KP = 0.021;
     public static double TURN_KI = 0.0;
     public static double TURN_KD = 0.0;
@@ -39,8 +58,14 @@ public final class Constants {
     public static final double MAX_INGL = 1.0;
     public static final double TOLERANCE = 0.1;
 
+
+    // Control Panel
     public static double ROTATION_SPEED = 0.25;
     public static double POSITION_SPEED = 0.15;
+
+
+    //Shooter
+    public static double kVtoRPM = 0;
   }
 
   public static final class OIConstants {
