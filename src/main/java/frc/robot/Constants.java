@@ -22,6 +22,11 @@ public final class Constants {
     public static final class HatchConstants {
       
     }
+
+    public static final class PanelConstants {
+      // CAN ID's
+      public static final int PANEL = 0; 
+    }
   
     public static final class AutoConstants {
      

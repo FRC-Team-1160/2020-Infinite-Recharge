@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.*;
 import frc.robot.commands.drive.ManualDrive;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Panel;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -20,6 +21,7 @@ import frc.robot.subsystems.DriveTrain;
 public class RobotContainer {
     // The robot's subsystems
     private final DriveTrain m_driveTrain = new DriveTrain();
+    private final Panel m_panel = new Panel();
 
     // The autonomous routines
   
