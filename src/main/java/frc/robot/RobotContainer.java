@@ -10,8 +10,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.drive.TurnToAngle;
+import frc.robot.commands.shoot.Shoot;
+import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Panel;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -22,11 +23,9 @@ import frc.robot.subsystems.Panel;
  */
 public class RobotContainer {
     // The robot's subsystems
-    public final DriveTrain m_driveTrain = DriveTrain.getInstance();
+    public final DriveTrain m_driveTrain; 
 
-    // public final Panel m_panel = Panel.getInstance();
-
-    // public final Vision m_vision = Vision.getInstance();
+    public final Delivery m_delivery;
 
     // The autonomous routines
   
@@ -44,10 +43,17 @@ public class RobotContainer {
     // The driver's controller
     private Joystick m_mainStick = new Joystick(OIConstants.mainStickPort);
   
+    // Secondary controllers
+    private Joystick m_firstStick = new Joystick(OIConstants.firstStickPort);
+
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+      m_driveTrain = DriveTrain.getInstance();
+
+      m_delivery = Delivery.getInstance();
+
       // Configure the button bindings
       configureButtonBindings();
   
@@ -56,6 +62,11 @@ public class RobotContainer {
       m_driveTrain.setDefaultCommand(new RunCommand(
         () -> m_driveTrain.tankDrive((m_mainStick.getRawAxis(1)) , (m_mainStick.getRawAxis(4)), 0.0),
         m_driveTrain)
+      );
+
+      m_delivery.setDefaultCommand(new RunCommand(
+        () -> m_delivery.shoot(m_firstStick.getRawAxis(2), m_firstStick.getRawAxis(1), m_mainStick.getRawAxis(2), m_mainStick.getRawAxis(3)),
+        m_delivery)
       );
   
       // Add commands to the autonomous command chooser

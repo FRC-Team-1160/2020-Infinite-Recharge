@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.PortConstants;
 
 public class DriveTrain extends SubsystemBase{
   /**
@@ -28,7 +28,7 @@ public class DriveTrain extends SubsystemBase{
   private static DriveTrain m_instance;
 
   private final CANSparkMax m_frontLeft, m_middleLeft, m_backLeft, m_frontRight, m_middleRight, m_backRight;
-  private CANEncoder m_leftEncoder, m_rightEncoder;
+  // private CANEncoder m_leftEncoder, m_rightEncoder;
 
   private final DifferentialDrive m_mainDrive;
 
@@ -47,17 +47,25 @@ public class DriveTrain extends SubsystemBase{
 
   public DriveTrain() {
 
-    m_frontLeft = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
-    m_middleLeft = new CANSparkMax(DriveConstants.MIDDLE_LEFT_DRIVE, MotorType.kBrushless);
-    m_backLeft = new CANSparkMax(DriveConstants.BACK_LEFT_DRIVE, MotorType.kBrushless);    
+    m_frontLeft = new CANSparkMax(PortConstants.FRONT_LEFT_DRIVE, MotorType.kBrushless);
+    m_middleLeft = new CANSparkMax(PortConstants.MIDDLE_LEFT_DRIVE, MotorType.kBrushless);
+    m_backLeft = new CANSparkMax(PortConstants.BACK_LEFT_DRIVE, MotorType.kBrushless); 
+    
+    m_frontRight = new CANSparkMax(PortConstants.FRONT_RIGHT_DRIVE, MotorType.kBrushless);
+    m_middleRight = new CANSparkMax(PortConstants.MIDDLE_RIGHT_DRIVE, MotorType.kBrushless);
+    m_backRight = new CANSparkMax(PortConstants.BACK_RIGHT_DRIVE, MotorType.kBrushless);  
+    
+    m_frontLeft.restoreFactoryDefaults();
+    m_middleLeft.restoreFactoryDefaults();
+    m_backLeft.restoreFactoryDefaults();
+
+    m_frontRight.restoreFactoryDefaults();
+    m_middleRight.restoreFactoryDefaults();
+    m_backRight.restoreFactoryDefaults();
 
     m_frontLeft.follow(m_backLeft);
     m_middleLeft.follow(m_backLeft);
     
-    m_frontRight = new CANSparkMax(DriveConstants.FRONT_RIGHT_DRIVE, MotorType.kBrushless);
-    m_middleRight = new CANSparkMax(DriveConstants.MIDDLE_RIGHT_DRIVE, MotorType.kBrushless);
-    m_backRight = new CANSparkMax(DriveConstants.BACK_RIGHT_DRIVE, MotorType.kBrushless);   
-
     m_frontRight.follow(m_backRight);
     m_middleRight.follow(m_backRight);
 
@@ -76,6 +84,8 @@ public class DriveTrain extends SubsystemBase{
   
   public void tankDrive(final double x, final double z, final double correction){
     m_mainDrive.tankDrive(-x+z, -x-z); // x is positive when left joystick pulled down
+    SmartDashboard.putNumber("x", x);
+    SmartDashboard.putNumber("z", z);
   }
 
   public void resetYaw(){
@@ -99,5 +109,13 @@ public class DriveTrain extends SubsystemBase{
 
   @Override
   public void periodic() {
+    double[] outputs = {m_frontLeft.getBusVoltage(), 
+      m_middleLeft.getBusVoltage(),
+      m_backLeft.getBusVoltage(),
+      m_frontRight.getBusVoltage(),
+      m_middleRight.getBusVoltage(),
+      m_backRight.getBusVoltage(),
+    };
+    SmartDashboard.putNumberArray("outputs", outputs);
   }
 }

@@ -19,7 +19,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.PortConstants;
 
 public class Panel extends SubsystemBase {
   /**
@@ -50,7 +50,7 @@ public class Panel extends SubsystemBase {
   }
 
   public Panel() {
-    m_spinner = new CANSparkMax(DriveConstants.SPINNER, MotorType.kBrushless);
+    m_spinner = new CANSparkMax(PortConstants.SPINNER, MotorType.kBrushless);
 
     m_colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     m_colorMatcher = new ColorMatch();

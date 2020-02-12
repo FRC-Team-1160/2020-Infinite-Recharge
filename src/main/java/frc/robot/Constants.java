@@ -12,7 +12,7 @@ package frc.robot;
  */
 public final class Constants {
   // Units are m kg s unless otherwise specified
-  public static final class DriveConstants {
+  public static final class PortConstants {
     // CAN ID 
     public static final int FRONT_LEFT_DRIVE = 1;
     public static final int MIDDLE_LEFT_DRIVE = 2;
@@ -22,14 +22,18 @@ public final class Constants {
     public static final int MIDDLE_RIGHT_DRIVE = 5;
     public static final int BACK_RIGHT_DRIVE = 6;
 
-    public static final int SPINNER = 7;
+    public static final int INTAKE = 7;
+    public static final int INDEXER = 8;
 
-    public static final int x = 8;
-    public static final int y = 9;
-    public static final int z = 10;
-    public static final int a = 11;
-    public static final int b = 12;
-    public static final int c = 13;
+    public static final int CLIMBER = 9;
+
+    public static final int LEFT_SHOOTER = 13;
+    public static final int RIGHT_SHOOTER = 10;
+
+    public static final int TOP_FEEDER = 12;
+    public static final int BOTTOM_FEEDER = 11;
+
+    public static final int SPINNER = 14;
   }
 
   public static final class FieldConstants {
@@ -70,5 +74,6 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int mainStickPort = 0;
+    public static final int firstStickPort = 1;
   }
 }
