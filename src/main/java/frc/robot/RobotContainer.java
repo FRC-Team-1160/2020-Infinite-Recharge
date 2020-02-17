@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ComplexAuto;
 import frc.robot.commands.drive.TurnToAngle;
-import frc.robot.commands.shoot.Shoot;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.DriveTrain;
 
@@ -35,7 +35,7 @@ public class RobotContainer {
                          // m_robotDrive);
   
     // A complex auto routine that drives forward, drops a hatch, and then drives backward.
-    //private final Command m_complexAuto = new ComplexAuto(m_robotDrive, m_hatchSubsystem);
+    private Command m_complexAuto;
   
     // A chooser for autonomous commands
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -54,6 +54,8 @@ public class RobotContainer {
 
       m_delivery = Delivery.getInstance();
 
+      m_complexAuto = new ComplexAuto(m_driveTrain, m_delivery);
+
       // Configure the button bindings
       configureButtonBindings();
   
@@ -71,7 +73,7 @@ public class RobotContainer {
   
       // Add commands to the autonomous command chooser
       // m_chooser.addOption("Simple Auto", m_simpleAuto);
-      // m_chooser.addOption("Complex Auto", m_complexAuto);
+      m_chooser.addOption("Complex Auto", m_complexAuto);
   
       // Put the chooser on the dashboard
       // Shuffleboard.getTab("Autonomous").add(m_chooser);
