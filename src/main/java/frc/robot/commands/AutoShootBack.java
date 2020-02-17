@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.DriveTrain;
 
-public class ComplexAuto extends InstantCommand {
+public class AutoShootBack extends InstantCommand {
 
-    public ComplexAuto(DriveTrain m_driveTrain, Delivery m_delivery) {
+    public AutoShootBack(DriveTrain m_driveTrain, Delivery m_delivery) {
         super(new Runnable(){
         
             @Override
