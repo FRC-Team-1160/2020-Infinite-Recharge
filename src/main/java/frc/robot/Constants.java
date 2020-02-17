@@ -33,7 +33,9 @@ public final class Constants {
     public static final int TOP_FEEDER = 12;
     public static final int BOTTOM_FEEDER = 11;
 
-    public static final int SPINNER = 14;
+    public static final int INTAKE_ANGLE = 14;
+
+    public static final int SPINNER = 15;
   }
 
   public static final class FieldConstants {
@@ -64,8 +66,6 @@ public final class Constants {
 
 
     // Control Panel
-    public static double ROTATION_SPEED = 0.25;
-    public static double POSITION_SPEED = 0.15;
 
 
     //Shooter
@@ -75,5 +75,8 @@ public final class Constants {
   public static final class OIConstants {
     public static final int mainStickPort = 0;
     public static final int firstStickPort = 1;
+    public static final int secondStickPort = 2;
+    public static final int thirdStickPort = 3;
+
   }
 }

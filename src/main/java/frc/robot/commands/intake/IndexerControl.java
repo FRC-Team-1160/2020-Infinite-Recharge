@@ -5,24 +5,22 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.shoot;
-
-import java.util.function.DoubleSupplier;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Delivery;
+import frc.robot.subsystems.Intake;
 
-public class Shoot extends CommandBase {
+public class IndexerControl extends CommandBase {
   /**
-   * Creates a new Shoot.
+   * Creates a new IndexerControl.
    */
-  private final Delivery m_delivery;
-  private final DoubleSupplier m_speed;
-  public Shoot(Delivery delivery, DoubleSupplier speed) {
+  private Intake m_intake;
+  private double m_input;
+
+  public IndexerControl(Intake intake, double input) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_delivery = delivery;
-    m_speed = speed;
-    addRequirements(m_delivery);
+    m_intake = intake;
+    m_input = input;
   }
 
   // Called when the command is initially scheduled.
@@ -33,12 +31,13 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // m_delivery.shoot(m_speed.getAsDouble());
+    m_intake.indexerControl(m_input);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_intake.indexerControl(0);
   }
 
   // Returns true when the command should end.

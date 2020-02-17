@@ -38,6 +38,23 @@ public class Vision{
   }
 
   /**
+   * Stream modes for Limelight.
+   * 
+   * @author Dan Waxman
+   */
+  public static enum StreamMode {
+    eStandard, eMain, eSecondary
+  }
+
+  /**
+   * Snapshot modes for Limelight.
+   * 
+   * @author Dan Waxman
+   */
+  public static enum SnapshotMode {
+    eOff, eOn
+  }
+  /**
    * Gets whether a target is detected by the Limelight.
    * 
    * @return true if a target is detected, false otherwise.
@@ -112,6 +129,26 @@ public class Vision{
   }
 
   /**
+   * Sets stream mode for Limelight.
+   * 
+   * @param mode
+   *            Camera mode for Limelight.
+   */
+  public static void setStreamMode(StreamMode mode) {
+    getValue("stream").setNumber(mode.ordinal());
+  }
+
+  /**
+   * Sets snapshot mode for Limelight.
+   * 
+   * @param mode
+   *            Camera mode for Limelight.
+   */
+  public static void setSnapshotMode(SnapshotMode mode) {
+    getValue("snapshot").setNumber(mode.ordinal());
+  }
+
+  /**
    * Sets pipeline number (0-9 value).
    * 
    * @param number
@@ -128,7 +165,7 @@ public class Vision{
    *            Key for entry.
    * @return NetworkTableEntry of given entry.
    */
-  private static NetworkTableEntry getValue(String key) {
+  public static NetworkTableEntry getValue(String key) {
     if (table == null) {
       table = NetworkTableInstance.getDefault();
     }

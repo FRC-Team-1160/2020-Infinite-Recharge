@@ -10,37 +10,44 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PortConstants;
 
-public class Climber extends SubsystemBase {
+public class Shooter extends SubsystemBase {
   /**
-   * Creates a new Climber.
-   */  
-  private static Climber m_instance;
+   * Creates a new Shooter.
+   */
+  private static Shooter m_instance;
 
-  private CANSparkMax m_climber;
+  private final CANSparkMax  m_leftShooter, m_rightShooter;
 
-  public static Climber getInstance(){
+  private final DifferentialDrive m_mainShoot;
+
+  public static Shooter getInstance(){
     if (m_instance == null){
-      m_instance = new Climber();
+      m_instance = new Shooter();
     }
     return m_instance;
   }
+  
+  public Shooter() {
+    m_leftShooter = new CANSparkMax(PortConstants.LEFT_SHOOTER, MotorType.kBrushless);
+    m_rightShooter = new CANSparkMax(PortConstants.RIGHT_SHOOTER, MotorType.kBrushless);
 
-  public Climber() {
-    m_climber = new CANSparkMax(PortConstants.CLIMBER, MotorType.kBrushless);
+    
+    m_leftShooter.restoreFactoryDefaults();
+    m_rightShooter.restoreFactoryDefaults();
 
-    m_climber.restoreFactoryDefaults();
+    m_mainShoot = new DifferentialDrive(m_leftShooter, m_rightShooter);
   }
 
-  public void climbControl(double speed){
-    m_climber.set(speed);
+  public void shooterControl(double input){
+    m_mainShoot.tankDrive(input, input);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
   }
 }

@@ -5,56 +5,44 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.panel;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.subsystems.Panel;
+import frc.robot.subsystems.Intake;
 
-public class RotationControl extends CommandBase {
+public class IntakeControl extends CommandBase {
   /**
-   * Creates a new RotationControl.
+   * Creates a new IntakeControl.
    */
-  private int numTurns;
+  private Intake m_intake;
+  private double m_input;
 
-  private char curColor;
-
-  private Panel m_pn;
-
-  public RotationControl(Panel pn) {
+  public IntakeControl(Intake intake, double input) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_pn = pn;
-    addRequirements(m_pn);
-    numTurns = 0;
-    curColor = ' ';
+    m_intake = intake;
+    m_input = input;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    numTurns = 0;
-    curColor = m_pn.getColor();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_pn.setSpinner(AutoConstants.ROTATION_SPEED);
-    if(curColor != m_pn.getColor()){
-      curColor = m_pn.getColor();
-      numTurns += 1;
-    }
+    m_intake.intakeControl(m_input);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_pn.setSpinner(0);
+    m_intake.intakeControl(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return numTurns > 28;
+    return false;
   }
 }

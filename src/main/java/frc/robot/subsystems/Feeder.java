@@ -7,43 +7,42 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.ColorMatchResult;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorMatch;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PortConstants;
 
-public class Panel extends SubsystemBase {
+public class Feeder extends SubsystemBase {
   /**
-   * Creates a new Panel.
+   * Creates a new Delivery.
    */
-  private static Panel m_instance;
+  private static Feeder m_instance;
 
-  private CANSparkMax m_spinner;
+  private final CANSparkMax m_topFeeder, m_bottomFeeder;
 
-  public static Panel getInstance(){
+  private final DifferentialDrive m_mainFeeder;
+
+  public static Feeder getInstance(){
     if (m_instance == null){
-      m_instance = new Panel();
+      m_instance = new Feeder();
     }
     return m_instance;
   }
 
-  public Panel() {
-    m_spinner = new CANSparkMax(PortConstants.SPINNER, MotorType.kBrushless);
+  public Feeder() {
+    m_topFeeder = new CANSparkMax(PortConstants.TOP_FEEDER, MotorType.kBrushless);
+    m_bottomFeeder = new CANSparkMax(PortConstants.BOTTOM_FEEDER, MotorType.kBrushless);
 
-    m_spinner.restoreFactoryDefaults();
+    m_topFeeder.restoreFactoryDefaults();
+    m_bottomFeeder.restoreFactoryDefaults();
+    
+    m_mainFeeder = new DifferentialDrive(m_topFeeder, m_bottomFeeder);
   }
 
-  public void spin(double speed){
-    m_spinner.set(speed);
+  public void feederControl(double feeder){
+    m_mainFeeder.tankDrive(feeder, -feeder);
   }
 
   @Override

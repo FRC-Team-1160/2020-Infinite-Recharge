@@ -8,48 +8,41 @@
 package frc.robot.commands.panel;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.Panel;
 
-public class PositionControl extends CommandBase {
+public class SpinnerControl extends CommandBase {
   /**
-   * Creates a new PositionControl.
+   * Creates a new SpinnerControl.
    */
-  private char curColor;
+  private Panel m_panel;
+  private double m_input;
 
-  private Panel m_pn;
-
-  public PositionControl(Panel pn, String target) {
+  public SpinnerControl(Panel panel, double input) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_pn = pn;
-    addRequirements(m_pn);
-    curColor = ' ';
+    m_panel = panel;
+    m_input = input;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    curColor = m_pn.getTarget();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_pn.setSpinner(AutoConstants.POSITION_SPEED);
-    if(curColor != m_pn.getColor()){
-      curColor = m_pn.getColor();
-    }
+    m_panel.spin(m_input);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_pn.setSpinner(0);
+    m_panel.spin(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (m_pn.getTarget() == 'N') || (m_pn.getTarget() == curColor);
+    return false;
   }
 }
