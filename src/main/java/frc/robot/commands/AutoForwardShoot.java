@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Delivery;
 import frc.robot.subsystems.DriveTrain;
 
-public class AutoShootBack extends InstantCommand {
+public class AutoForwardShoot extends InstantCommand {
 
-    public AutoShootBack(DriveTrain m_driveTrain, Delivery m_delivery) {
+    public AutoForwardShoot(DriveTrain m_driveTrain, Delivery m_delivery) {
         super(new Runnable(){
         
             @Override
@@ -21,11 +21,11 @@ public class AutoShootBack extends InstantCommand {
                 m_timer.reset();
                 m_timer.start();
 
-                if (m_timer.get() < 10)
+                if (m_timer.get() < 2)
                 {
-                    m_delivery.shoot(1, 1, 1, 0);
+                    m_driveTrain.tankDrive(-1.0, 1.0, 0.0);
                 }else if (m_timer.get() < 13) {
-                    m_driveTrain.tankDrive(0.5, -0.5, 0.0);
+                    m_delivery.shoot(1, 1, 1, 0);
                 }
 
                 if (m_timer.get() >= 15) return;
