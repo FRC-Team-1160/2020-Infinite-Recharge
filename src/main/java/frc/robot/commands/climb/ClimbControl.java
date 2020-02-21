@@ -17,9 +17,9 @@ public class ClimbControl extends CommandBase {
   private Climber m_climber;
   private double m_input;
 
-  public ClimbControl(Climber feeder, double input) {
+  public ClimbControl(Climber climber, double input) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_climber = feeder;
+    m_climber = climber;
     m_input = input;
   }
 

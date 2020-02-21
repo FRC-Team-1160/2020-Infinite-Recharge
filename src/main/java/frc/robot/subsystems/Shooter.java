@@ -32,8 +32,8 @@ public class Shooter extends SubsystemBase {
   }
   
   public Shooter() {
-    m_leftShooter = new CANSparkMax(PortConstants.LEFT_SHOOTER, MotorType.kBrushless);
-    m_rightShooter = new CANSparkMax(PortConstants.RIGHT_SHOOTER, MotorType.kBrushless);
+    m_leftShooter = new CANSparkMax(PortConstants.LEFT_SHOOTER, MotorType.kBrushed);
+    m_rightShooter = new CANSparkMax(PortConstants.RIGHT_SHOOTER, MotorType.kBrushed);
 
     
     m_leftShooter.restoreFactoryDefaults();
@@ -43,7 +43,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shooterControl(double input){
-    m_mainShoot.tankDrive(input, input);
+    m_mainShoot.tankDrive(-input, input);
   }
 
   @Override

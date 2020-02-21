@@ -16,11 +16,13 @@ public class SpinnerControl extends CommandBase {
    */
   private Panel m_panel;
   private double m_input;
+  private boolean m_volt;
 
-  public SpinnerControl(Panel panel, double input) {
+  public SpinnerControl(Panel panel, double input, boolean volt) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_panel = panel;
     m_input = input;
+    m_volt = volt;
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +33,11 @@ public class SpinnerControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_panel.spin(m_input);
+    if(m_volt){
+      m_panel.voltageSpin(m_input);
+    }else{
+      m_panel.spin(m_input);
+    }
   }
 
   // Called once the command ends or is interrupted.

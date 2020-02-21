@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ColorMatchResult;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
 
@@ -29,8 +31,10 @@ public class Panel extends SubsystemBase {
 
   private CANSparkMax m_spinner;
 
-  public static Panel getInstance(){
-    if (m_instance == null){
+  private CANPIDController m_spinnerController;
+
+  public static Panel getInstance() {
+    if (m_instance == null) {
       m_instance = new Panel();
     }
     return m_instance;
@@ -39,11 +43,17 @@ public class Panel extends SubsystemBase {
   public Panel() {
     m_spinner = new CANSparkMax(PortConstants.SPINNER, MotorType.kBrushless);
 
+    m_spinnerController = m_spinner.getPIDController();
+
     m_spinner.restoreFactoryDefaults();
   }
 
-  public void spin(double speed){
+  public void spin(double speed) {
     m_spinner.set(speed);
+  }
+
+  public void voltageSpin(double input){
+    m_spinnerController.setReference(input, ControlType.kVoltage);
   }
 
   @Override

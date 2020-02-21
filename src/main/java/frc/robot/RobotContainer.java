@@ -4,9 +4,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -34,17 +36,17 @@ import frc.robot.subsystems.Shooter;
  */
 public class RobotContainer {
     // The robot's subsystems
-    public final DriveTrain m_driveTrain; 
+    public final DriveTrain m_driveTrain = DriveTrain.getInstance(); 
 
-    public final Intake m_intake;
+    public final Intake m_intake = Intake.getInstance();
 
-    public final Feeder m_feeder;
+    public final Feeder m_feeder = Feeder.getInstance();
 
-    public final Shooter m_shooter;
+    public final Shooter m_shooter = Shooter.getInstance();
 
-    public final Panel m_panel;
+    public final Panel m_panel = Panel.getInstance();
 
-    public final Climber m_climber;
+    public final Climber m_climber = Climber.getInstance();
 
     // The autonomous routines
   
@@ -53,9 +55,22 @@ public class RobotContainer {
         //new DriveDistance(AutoConstants.kAutoDriveDistanceInches, AutoConstants.kAutoDriveSpeed,
                          // m_robotDrive);
   
+    private final Command m_turnRight =
+      new TurnToAngle(m_driveTrain, 45);
+
+    private final Command m_turnLeft =
+      new TurnToAngle(m_driveTrain, -45);
     // A complex auto routine that drives forward, drops a hatch, and then drives backward.
     //private final Command m_complexAuto = new ComplexAuto(m_robotDrive, m_hatchSubsystem);
-  
+    private final Command m_turnShoot =
+      new SequentialCommandGroup(
+        new TurnToAngle(m_driveTrain, 0.0),
+        new ParallelCommandGroup(
+          new FeederControl(m_feeder, 0.8),
+          new ShooterControl(m_shooter, -0.72)
+        ).withTimeout(5.0)
+      );
+
     // A chooser for autonomous commands
     SendableChooser<Command> m_chooser = new SendableChooser<>();
   
@@ -72,17 +87,6 @@ public class RobotContainer {
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-      m_driveTrain = DriveTrain.getInstance();
-
-      m_intake = Intake.getInstance();
-
-      m_feeder = Feeder.getInstance();
-
-      m_shooter = Shooter.getInstance();
-
-      m_panel = Panel.getInstance();
-
-      m_climber = Climber.getInstance();
 
       // Configure the button bindings
       configureButtonBindings();
@@ -90,7 +94,7 @@ public class RobotContainer {
       // Configure default commands
       
       m_driveTrain.setDefaultCommand(new RunCommand(
-        () -> m_driveTrain.tankDrive((m_mainStick.getRawAxis(1)) , (m_mainStick.getRawAxis(4)), 0.0),
+        () -> m_driveTrain.tankDrive(m_mainStick.getRawAxis(1), m_mainStick.getRawAxis(4)),
         m_driveTrain)
       );
 
@@ -103,9 +107,15 @@ public class RobotContainer {
       // Add commands to the autonomous command chooser
       // m_chooser.addOption("Simple Auto", m_simpleAuto);
       // m_chooser.addOption("Complex Auto", m_complexAuto);
+
+      m_chooser.addOption("Turn Right", m_turnRight);
+      m_chooser.addOption("Turn Left", m_turnLeft);
+      m_chooser.addOption("Turn and Shoot", m_turnShoot);
   
       // Put the chooser on the dashboard
       // Shuffleboard.getTab("Autonomous").add(m_chooser);
+      Shuffleboard.getTab("Autonomous").add(m_chooser);
+      
     }
   
     /**
@@ -119,14 +129,13 @@ public class RobotContainer {
       // new JoystickButton(m_driverController, Button.kA.value)
           // .whenPressed(new GrabHatch(m_hatchSubsystem));
       
-      /*
-      new JoystickButton(m_mainStick, Button.kA.value)
+      
+      new JoystickButton(m_mainStick, Button.kBumperLeft.value)
         .whenPressed(
           new SequentialCommandGroup(
             new TurnToAngle(m_driveTrain)
           )
         );
-      */
 
       // Limelight LED Toggle
       new JoystickButton(m_mainStick, Button.kA.value)
@@ -152,22 +161,29 @@ public class RobotContainer {
           new LimelightSnapshotToggle()
         );
 
+      
+      // Run Intake In (Driver)
+      new JoystickButton(m_mainStick, Button.kBumperRight.value)
+        .whileHeld(
+          new IntakeControl(m_intake, -0.95)
+        );
+
       // Run Intake In
       new JoystickButton(m_firstStick, 1)
         .whileHeld(
-          new IntakeControl(m_intake, -0.75)
+          new IntakeControl(m_intake, -0.95)
         );
 
       // Run Indexer Out
       new JoystickButton(m_firstStick, 2)
         .whileHeld(
-          new IndexerControl(m_intake, 0.3)
+          new IndexerControl(m_intake, 0.45)
         );
 
       // Run Indexer In
       new JoystickButton(m_firstStick, 3)
         .whileHeld(
-          new IndexerControl(m_intake, -0.3)
+          new IndexerControl(m_intake, -0.45)
         );
 
       // Run Intake Angle Up
@@ -201,19 +217,23 @@ public class RobotContainer {
       // Control Panel Position
       new JoystickButton(m_firstStick, 10)
         .whileHeld(
-          new SpinnerControl(m_panel, 0.25)
+          new SpinnerControl(m_panel, 3, true)
         );
       
       // Control Panel Rotation
       new JoystickButton(m_firstStick, 11)
         .whileHeld(
-          new SpinnerControl(m_panel, 0.5)
+          new SpinnerControl(m_panel, 0.25, false)
         );
       
       // Belt Up to Shoot
       new JoystickButton(m_secondStick, 1)
         .whileHeld(
-          new FeederControl(m_feeder, 0.8)
+          new ParallelCommandGroup(
+            new FeederControl(m_feeder, 0.8),
+            new IndexerControl(m_intake, -0.3),
+            new IntakeControl(m_intake, -0.75)
+          )
         );
 
       // Run Shooter Mid Speed
@@ -234,16 +254,16 @@ public class RobotContainer {
           new ShooterControl(m_shooter, -0.9)
         );
 
-      // Run Climber Up
+      // Run Climber Down
       new JoystickButton(m_secondStick, 6)
         .whileHeld(
-          new ClimbControl(m_climber, 0.2)
+          new ClimbControl(m_climber, 0.5)
         );
 
-      // Run Climber Down
+      // Run Climber Up
       new JoystickButton(m_secondStick, 7)
         .whileHeld(
-          new ClimbControl(m_climber, -0.2)
+          new ClimbControl(m_climber, -0.5)
         );
     }
   
