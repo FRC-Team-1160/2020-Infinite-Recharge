@@ -48,13 +48,13 @@ public final class Constants {
   }
 
   public static final class FieldConstants {
-    public static double INNER_PORT_HEIGHT = 1.88976; // meters
-    public static double LIMELIGHT_HEIGHT = 0; // meters
-    public static double RELATIVE_INNER_PORT_HEIGHT = 1.9304; //meters; calculation in vision.java
+    public static double INNER_PORT_HEIGHT = 2.4257; // meters
+    public static double LIMELIGHT_HEIGHT = 0.4953; // meters
+    public static double RELATIVE_INNER_PORT_HEIGHT = INNER_PORT_HEIGHT - LIMELIGHT_HEIGHT; //meters; calculation in vision.java
   }
 
   public static final class VisionConstants {
-    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES = 0;
+    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES = 15;
     public static double LIMELIGHT_ANGULAR_DISPLACEMENT_RADIANS = Math.toRadians(LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES);
   }
 
