@@ -44,7 +44,7 @@ public final class Constants {
     public static final double kP_DRIVE = 0.002;
     public static final double ANGLE_THRESHOLD = 0.05;
     public static final double TURN_FACTOR = 0.75;
-    public static final double VOLTAGE_TO_SPEED = 4;
+    public static final double VOLTAGE_TO_SPEED = 3;
   }
 
   public static final class FieldConstants {
