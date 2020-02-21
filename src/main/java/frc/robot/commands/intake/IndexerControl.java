@@ -5,25 +5,22 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drive;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
 
-public class ManualDrive extends CommandBase {
+public class IndexerControl extends CommandBase {
   /**
-   * Creates a new ManualDrive.
+   * Creates a new IndexerControl.
    */
-  private double y, z;
+  private Intake m_intake;
+  private double m_input;
 
-  private DriveTrain dt;
-
-  public ManualDrive(DriveTrain dt, double y, double z) {
+  public IndexerControl(Intake intake, double input) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(dt);
-    this.y = y;
-    this.z = z;
-    this.dt = dt;
+    m_intake = intake;
+    m_input = input;
   }
 
   // Called when the command is initially scheduled.
@@ -34,12 +31,13 @@ public class ManualDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.dt.drive(z-y, z+y);
+    m_intake.indexerControl(m_input);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_intake.indexerControl(0);
   }
 
   // Returns true when the command should end.
