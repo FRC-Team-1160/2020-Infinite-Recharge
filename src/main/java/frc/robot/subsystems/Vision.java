@@ -184,6 +184,11 @@ public class Vision{
   public static double getVelocity(double displacement){
     return (displacement * Math.sqrt(9.8)) / (Math.cos(VisionConstants.LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES) * Math.sqrt(2 * (displacement * Math.tan(VisionConstants.LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES) - FieldConstants.RELATIVE_INNER_PORT_HEIGHT)));
   }
+  //height1 = 65.5 + 18 = 83.5 inches = 212.09 cm + 30.48 = 242.57cm
+  //height3 = 19.5 inches = 49.53 cm
+  //delta height = 212.09 - 49.53 = 162.56 + 30.48 = 193.04 cm
+
+
 
   public static double getRPM(double velocity){
     return AutoConstants.kVtoRPM * velocity;
