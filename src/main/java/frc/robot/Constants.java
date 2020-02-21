@@ -54,7 +54,7 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES = -15;
+    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES = 15;
     public static double LIMELIGHT_ANGULAR_DISPLACEMENT_RADIANS = Math.toRadians(LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES);
   }
 
