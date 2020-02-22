@@ -5,14 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drive;
+package frc.robot.commands.panel;
 
 import frc.robot.subsystems.Panel;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.util.Color;
 
 public class PositionControl extends CommandBase {
   //Creates a new PositionControl.
   private final Panel pan;
+  private Color currentColor;
   
   public PositionControl(Panel pan) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,8 +25,7 @@ public class PositionControl extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pan.setTargetColor();
-    pan.startSpinning(0.5);
+    pan.getPanelMotor().set(1.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,12 +36,17 @@ public class PositionControl extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pan.stopSpinning();
+    pan.getPanelMotor().set(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pan.foundColor();
+    currentColor = pan.getColorSensor().getColor();
+    //to see if the current Color detected by the wheel is the color we want
+    if(pan.getMatcher().matchClosestColor(pan.getTargetColor()).equals(pan.getMatcher().matchClosestColor(currentColor))){
+      return true;
+    }
+    return false;
   }
 }

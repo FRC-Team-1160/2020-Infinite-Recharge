@@ -5,10 +5,11 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drive;
+package frc.robot.commands.panel;
 
 import frc.robot.subsystems.Panel;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.PanelConstants;
 
 public class RotationControl extends CommandBase {
   // Creates a new Rotation.
@@ -23,8 +24,8 @@ public class RotationControl extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //the motor is reset and then it spins
-    pan.startSpinning(1.0);
+    pan.getPanelEncoder().setPosition(0);
+    pan.getPanelMotor().set(1.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,14 +36,18 @@ public class RotationControl extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //stop the motor & reset it
-    pan.stopSpinning();
+    //stop the motor
+    pan.getPanelMotor().set(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //returns false until the color changes 26 times
-    return pan.enoughSpins();
+    //checks to see if the panelMotor has rotated enough times
+    if(pan.getPanelEncoder().getPosition() > PanelConstants.MIN_REVS){
+      return true;
+    } else {
+      return false;
+    }
   }
 }

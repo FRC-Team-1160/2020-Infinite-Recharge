@@ -11,21 +11,16 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final class DriveConstants {
-        //Talon Rio Ports
-        public static final int BACK_LEFT_DRIVE = 1;
-        public static final int FRONT_LEFT_DRIVE = 2;
-        public static final int BACK_RIGHT_DRIVE = 3;
-        public static final int FRONT_RIGHT_DRIVE = 4;
-    }
-  
-    public static final class HatchConstants {
-      
-    }
 
     public static final class PanelConstants {
-      // CAN ID's
+      // CAN ID
       public static final int PANEL = 0; 
+
+      //constants for encoder and rotational control
+      public static final int COUNTS_PER_REV = 42;
+      //260 should be equal to 26 spins of the gear box shaft, which is equal to 3 1/4 rotations of panel
+      public static final int MIN_REVS = 260;
+      public static final int CONVERSION_FACTOR = 1;
     }
   
     public static final class AutoConstants {

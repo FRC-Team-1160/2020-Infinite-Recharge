@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.*;
-import frc.robot.commands.drive.ManualDrive;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.commands.panel.*;
+import frc.robot.commands.drive.*;
 import frc.robot.subsystems.Panel;
 
 /**
@@ -20,18 +20,7 @@ import frc.robot.subsystems.Panel;
  */
 public class RobotContainer {
     // The robot's subsystems
-    private final DriveTrain m_driveTrain = new DriveTrain();
-    private final Panel m_panel = new Panel();
-
-    // The autonomous routines
-  
-    // A simple auto routine that drives forward a specified distance, and then stops.
-    //private final Command m_simpleAuto =
-        //new DriveDistance(AutoConstants.kAutoDriveDistanceInches, AutoConstants.kAutoDriveSpeed,
-                         // m_robotDrive);
-  
-    // A complex auto routine that drives forward, drops a hatch, and then drives backward.
-    //private final Command m_complexAuto = new ComplexAuto(m_robotDrive, m_hatchSubsystem);
+    private final Panel m_panel = Panel.getInstance();
   
     // A chooser for autonomous commands
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -47,15 +36,6 @@ public class RobotContainer {
       configureButtonBindings();
   
       // Configure default commands
-
-      m_driveTrain.setDefaultCommand(new ManualDrive(m_driveTrain, m_mainStick.getRawAxis(1), m_mainStick.getRawAxis(4)));
-  
-      // Add commands to the autonomous command chooser
-      // m_chooser.addOption("Simple Auto", m_simpleAuto);
-      // m_chooser.addOption("Complex Auto", m_complexAuto);
-  
-      // Put the chooser on the dashboard
-      // Shuffleboard.getTab("Autonomous").add(m_chooser);
     }
   
     /**
@@ -65,9 +45,17 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-      // Grab the hatch when the 'A' button is pressed.
-      // new JoystickButton(m_driverController, Button.kA.value)
-          // .whenPressed(new GrabHatch(m_hatchSubsystem));
+      // Rotate the control panel 3-5 times
+      new JoystickButton(m_mainStick, 0)
+        .whenPressed(
+          new RotationControl(m_panel)
+        );
+
+      // Spin the control panel to the target color
+      new JoystickButton(m_mainStick, 1)
+      .whenPressed(
+        new PositionControl(m_panel)
+      );
     }
   
   
