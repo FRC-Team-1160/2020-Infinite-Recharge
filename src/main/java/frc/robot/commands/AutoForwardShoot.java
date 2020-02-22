@@ -21,11 +21,11 @@ public class AutoForwardShoot extends InstantCommand {
                 m_timer.reset();
                 m_timer.start();
 
-                if (m_timer.get() < 2)
+                if (m_timer.get() < 1)
                 {
                     m_driveTrain.tankDrive(-1.0, 1.0, 0.0);
                 }else if (m_timer.get() < 13) {
-                    m_delivery.shoot(1, 1, 1, 0);
+                    //m_delivery.shoot(1, 1, 1, 0);
                 }
 
                 if (m_timer.get() >= 15) return;
