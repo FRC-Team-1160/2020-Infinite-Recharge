@@ -72,11 +72,13 @@ public class RobotContainer {
       );
 
     private final Command m_shootBack = 
+      // new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7);
       new SequentialCommandGroup(
-        new ParallelCommandGroup(
-          new FeederControl(m_feeder, 0.8),
-          new ShooterControl(m_shooter, -0.72)
-        ).withTimeout(5.0),
+        // new ParallelCommandGroup(
+        //   new ShooterControl(m_shooter, -0.9),
+        //   new FeederControl(m_feeder, 0.8)
+        // ).withTimeout(5.0),
+        new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7).withTimeout(5.0),
         new Drive(m_driveTrain).withTimeout(2)
       );
 
