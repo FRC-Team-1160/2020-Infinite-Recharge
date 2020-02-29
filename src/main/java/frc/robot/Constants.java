@@ -12,6 +12,8 @@ package frc.robot;
  */
 public final class Constants {
   // Units are m kg s unless otherwise specified
+  public static final boolean isFinal = false;
+
   public static final class PortConstants {
     // CAN ID 
     public static final int FRONT_LEFT_DRIVE = 1;
@@ -37,6 +39,32 @@ public final class Constants {
 
     public static final int SPINNER = 15;
   }
+
+  public static final class PortConstantsFinal {
+    // CAN ID 
+    public static final int FRONT_LEFT_DRIVE = 1;
+    public static final int MIDDLE_LEFT_DRIVE = 2;
+    public static final int BACK_LEFT_DRIVE = 3;
+
+    public static final int FRONT_RIGHT_DRIVE = 4;
+    public static final int MIDDLE_RIGHT_DRIVE = 5;
+    public static final int BACK_RIGHT_DRIVE = 6;
+
+    public static final int INTAKE = 10;
+    public static final int INDEXER = 9;
+    public static final int INTAKE_ANGLE = 11;
+
+    public static final int CLIMBER = 13;
+
+    public static final int LEFT_SHOOTER = 15;
+    public static final int RIGHT_SHOOTER = 7;
+
+    public static final int TOP_FEEDER = 14;
+    public static final int BOTTOM_FEEDER = 8;
+
+    public static final int SPINNER = 12;
+  }
+  
 
   public static final class DriveConstants{
     public static final double OUTPUT_MIN = 0.0;
