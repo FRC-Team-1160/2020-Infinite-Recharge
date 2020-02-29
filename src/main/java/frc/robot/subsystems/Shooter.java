@@ -13,7 +13,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANPIDController;
+//import com.revrobotics.CANPIDController;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,9 +28,9 @@ public class Shooter extends SubsystemBase {
 
   private final CANSparkMax  m_leftShooter, m_rightShooter;
 
-  private CANEncoder m_leftEncoder, m_rightEncoder;
+  // private CANEncoder m_leftEncoder, m_rightEncoder;
 
-  private CANPIDController m_shootController;
+  //private CANPIDController m_shootController;
 
   double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
@@ -51,12 +51,12 @@ public class Shooter extends SubsystemBase {
 
     m_rightShooter.follow(m_leftShooter, false);
 
-    m_leftEncoder = m_leftShooter.getAlternateEncoder(AlternateEncoderType.kQuadrature, 1024);
+    // m_leftEncoder = m_leftShooter.getAlternateEncoder(AlternateEncoderType.kQuadrature, 1024);
     // m_rightEncoder = m_rightShooter.getAlternateEncoder(AlternateEncoderType.kQuadrature, 1024);
 
-    m_shootController = m_leftShooter.getPIDController();
+    //m_shootController = m_leftShooter.getPIDController();
 
-    m_shootController.setFeedbackDevice(m_leftEncoder);
+    // m_shootController.setFeedbackDevice(m_leftEncoder);
 
 
     // PID coefficients
@@ -68,12 +68,13 @@ public class Shooter extends SubsystemBase {
     kMaxOutput = 1; 
     kMinOutput = -1;
 
-    m_shootController.setP(kP);
+    /*m_shootController.setP(kP);
     m_shootController.setI(kI);
     m_shootController.setD(kD);
     m_shootController.setIZone(kIz);
     m_shootController.setFF(kFF);
     m_shootController.setOutputRange(kMinOutput, kMaxOutput);
+    */
 
     SmartDashboard.putNumber("P Gain", kP);
     SmartDashboard.putNumber("I Gain", kI);
@@ -93,9 +94,9 @@ public class Shooter extends SubsystemBase {
     // m_shootController.setReference(1000, ControlType.kPosition);
   }
 
-  public void PIDShooterPositionControl(double input){
+  /*public void PIDShooterPositionControl(double input){
     m_shootController.setReference(input, ControlType.kPosition);
-  }
+  }*/
 
   @Override
   public void periodic() {
@@ -112,7 +113,7 @@ public class Shooter extends SubsystemBase {
     double rotations = SmartDashboard.getNumber("Set Rotations", 0);
 
     // if PID coefficients on SmartDashboard have changed, write new values to controller
-    if((p != kP)) { m_shootController.setP(p); kP = p; }
+    /*if((p != kP)) { m_shootController.setP(p); kP = p; }
     if((i != kI)) { m_shootController.setI(i); kI = i; }
     if((d != kD)) { m_shootController.setD(d); kD = d; }
     if((iz != kIz)) { m_shootController.setIZone(iz); kIz = iz; }
@@ -120,7 +121,7 @@ public class Shooter extends SubsystemBase {
     if((max != kMaxOutput) || (min != kMinOutput)) { 
       m_shootController.setOutputRange(min, max); 
       kMinOutput = min; kMaxOutput = max; 
-    }
+    }*/
 
     /**
      * PIDController objects are commanded to a set point using the 
@@ -136,9 +137,9 @@ public class Shooter extends SubsystemBase {
      *  com.revrobotics.ControlType.kVelocity
      *  com.revrobotics.ControlType.kVoltage
      */
-    m_shootController.setReference(rotations, ControlType.kPosition);
+    //m_shootController.setReference(rotations, ControlType.kPosition);
     
     SmartDashboard.putNumber("SetPoint", rotations);
-    SmartDashboard.putNumber("ProcessVariable", m_leftEncoder.getPosition());
+    //SmartDashboard.putNumber("ProcessVariable", m_leftEncoder.getPosition());
   }
 }

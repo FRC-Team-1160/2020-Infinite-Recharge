@@ -177,25 +177,25 @@ public class RobotContainer {
       // Run Intake In (Driver)
       new JoystickButton(m_mainStick, Button.kBumperLeft.value)
         .whileHeld(
-          new IntakeControl(m_intake, -0.5)
+          new IntakeControl(m_intake, -0.4)//-0.3,-0.5
         );
 
       // Run Intake In
       new JoystickButton(m_firstStick, 1)
         .whileHeld(
-          new IntakeControl(m_intake, -0.5)
+          new IntakeControl(m_intake, -0.4)//-0.3,-0.5
         );
 
       // Run Indexer Out
       new JoystickButton(m_firstStick, 2)
         .whileHeld(
-          new IndexerControl(m_intake, 0.45)
+          new IndexerControl(m_intake, 0.55)
         );
 
       // Run Indexer In
       new JoystickButton(m_firstStick, 3)
         .whileHeld(
-          new IndexerControl(m_intake, -0.45)
+          new IndexerControl(m_intake, -0.65)
         );
 
       // Run Intake Angle Up
