@@ -38,10 +38,8 @@ public class Feeder extends SubsystemBase {
 
     }else{
       m_topFeeder = new CANSparkMax(PortConstants.TOP_FEEDER, MotorType.kBrushless);
-      m_bottomFeeder = new CANSparkMax(PortConstants.BOTTOM_FEEDER, MotorType.kBrushless);
-      
+      m_bottomFeeder = new CANSparkMax(PortConstants.BOTTOM_FEEDER, MotorType.kBrushless); 
     }
-
 
     m_topFeeder.restoreFactoryDefaults();
     m_bottomFeeder.restoreFactoryDefaults();
@@ -50,11 +48,11 @@ public class Feeder extends SubsystemBase {
   }
 
   public void feederControl(double feeder){
-    System.out.println("running");
+    // System.out.println("running");
     // m_mainFeeder.tankDrive(feeder, -feeder);
     m_topFeeder.set(feeder);
     //m_bottomFeeder.set(-feeder);
-    System.out.println("ran");
+    // System.out.println("ran");
   }
 
   @Override

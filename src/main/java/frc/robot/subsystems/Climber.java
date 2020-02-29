@@ -11,7 +11,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.PortConstants;
+import frc.robot.Constants.PortConstantsFinal;
 
 public class Climber extends SubsystemBase {
   /**
@@ -29,7 +31,11 @@ public class Climber extends SubsystemBase {
   }
 
   public Climber() {
-    m_climber = new CANSparkMax(PortConstants.CLIMBER, MotorType.kBrushless);
+    if (Constants.isFinal){
+      m_climber = new CANSparkMax(PortConstantsFinal.CLIMBER, MotorType.kBrushless);
+    }else{
+      m_climber = new CANSparkMax(PortConstants.CLIMBER, MotorType.kBrushless);
+    }
 
     m_climber.restoreFactoryDefaults();
   }

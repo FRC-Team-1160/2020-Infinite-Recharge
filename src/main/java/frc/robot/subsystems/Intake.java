@@ -6,13 +6,16 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.subsystems;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.PortConstants;
+import frc.robot.Constants.PortConstantsFinal;
 
 
 public class Intake extends SubsystemBase {
@@ -33,15 +36,23 @@ public class Intake extends SubsystemBase {
   }
 
   public Intake() {
-    m_indexer = new CANSparkMax(PortConstants.INDEXER, MotorType.kBrushed);
-    m_intake = new CANSparkMax(PortConstants.INTAKE, MotorType.kBrushed);
-    m_intakeAngle = new CANSparkMax(PortConstants.INTAKE_ANGLE, MotorType.kBrushless);
+    if (Constants.isFinal){
+      m_indexer = new CANSparkMax(PortConstantsFinal.INDEXER, MotorType.kBrushed);
+      m_intake = new CANSparkMax(PortConstantsFinal.INTAKE, MotorType.kBrushed);
+      m_intakeAngle = new CANSparkMax(PortConstantsFinal.INTAKE_ANGLE, MotorType.kBrushless);
+
+    }else{
+      m_indexer = new CANSparkMax(PortConstants.INDEXER, MotorType.kBrushed);
+      m_intake = new CANSparkMax(PortConstants.INTAKE, MotorType.kBrushed);
+      m_intakeAngle = new CANSparkMax(PortConstants.INTAKE_ANGLE, MotorType.kBrushless);
+    }
+
 
     m_indexer.restoreFactoryDefaults();
     m_intake.restoreFactoryDefaults();
     m_intakeAngle.restoreFactoryDefaults();
 
-    SmartDashboard.putNumber("input number", k);
+    // SmartDashboard.putNumber("input number", k);
   }
 
   public void intakeControl(double input){
@@ -63,6 +74,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    k = SmartDashboard.getNumber("input number", 0.0);
+    // k = SmartDashboard.getNumber("input number", 0.0);
   }
 }

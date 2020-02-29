@@ -158,9 +158,9 @@ public class DriveTrain extends SubsystemBase{
     double[] directions = {leftDirection, rightDirection};
     double[] outputs = {leftOutput, rightOutput};
 
-    SmartDashboard.putNumberArray("inputs", rawInputs);
-    SmartDashboard.putNumberArray("directions", directions);
-    SmartDashboard.putNumberArray("outputs", outputs);
+    // SmartDashboard.putNumberArray("inputs", rawInputs);
+    // SmartDashboard.putNumberArray("directions", directions);
+    // SmartDashboard.putNumberArray("outputs", outputs);
 
     // when you run the SPARK MAX in voltage mode there is no control loop, it is still running open loop
     // https://www.chiefdelphi.com/t/frc-characterization-output-driven-results/374592/9
@@ -179,16 +179,16 @@ public class DriveTrain extends SubsystemBase{
     
     double[] finaloutputs = {finalOutputLeft, finalOutputRight};
 
-    SmartDashboard.putNumberArray("finaloutputs", finaloutputs);
+    // SmartDashboard.putNumberArray("finaloutputs", finaloutputs);
 
     // m_mainDrive.tankDrive(scaleDriveInput(rawLeftInput), scaleDriveInput(rawRightInput)); // x is positive when left joystick pulled down
     m_mainDrive.tankDrive(finalOutputLeft, finalOutputRight, false); // x is positive when left joystick pulled down
 
     // m_mainDrive.tankDrive(rawLeftInput, rawRightInput);
     
-    SmartDashboard.putNumber("voltage", m_backLeft.getAppliedOutput());
-    SmartDashboard.putNumber("x", x);
-    SmartDashboard.putNumber("z", z);
+    // SmartDashboard.putNumber("voltage", m_backLeft.getAppliedOutput());
+    // SmartDashboard.putNumber("x", x);
+    // SmartDashboard.putNumber("z", z);
   }
 
   public double scaleDriveInput(double input, double sign){
@@ -213,7 +213,7 @@ public class DriveTrain extends SubsystemBase{
     double sign = Math.signum(voltage);
     m_backLeft.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
     m_backRight.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
-    SmartDashboard.putNumber("voltage in turn", voltage);
+    // SmartDashboard.putNumber("voltage in turn", voltage);
   }
 
   @Override

@@ -18,7 +18,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.PortConstants;
+import frc.robot.Constants.PortConstantsFinal;
 
 public class Shooter extends SubsystemBase {
   /**
@@ -43,8 +45,15 @@ public class Shooter extends SubsystemBase {
   }
   
   public Shooter() {
-    m_leftShooter = new CANSparkMax(PortConstants.LEFT_SHOOTER, MotorType.kBrushed);
-    m_rightShooter = new CANSparkMax(PortConstants.RIGHT_SHOOTER, MotorType.kBrushed);
+    if (Constants.isFinal){
+      m_leftShooter = new CANSparkMax(PortConstantsFinal.LEFT_SHOOTER, MotorType.kBrushed);
+      m_rightShooter = new CANSparkMax(PortConstantsFinal.RIGHT_SHOOTER, MotorType.kBrushed);
+
+    }else{
+      m_leftShooter = new CANSparkMax(PortConstants.LEFT_SHOOTER, MotorType.kBrushed);
+      m_rightShooter = new CANSparkMax(PortConstants.RIGHT_SHOOTER, MotorType.kBrushed);
+    }
+
 
     m_leftShooter.restoreFactoryDefaults();
     m_rightShooter.restoreFactoryDefaults();
@@ -74,7 +83,7 @@ public class Shooter extends SubsystemBase {
     m_shootController.setIZone(kIz);
     m_shootController.setFF(kFF);
     m_shootController.setOutputRange(kMinOutput, kMaxOutput);
-    */
+
 
     SmartDashboard.putNumber("P Gain", kP);
     SmartDashboard.putNumber("I Gain", kI);
@@ -85,6 +94,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Min Output", kMinOutput);
     SmartDashboard.putNumber("Set Rotations", 0);
     SmartDashboard.putNumber("Set Rotations", 0);
+        */
 
   }
 
@@ -100,6 +110,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
     // This method will be called once per scheduler run
 
     // read PID coefficients from SmartDashboard
@@ -111,7 +122,7 @@ public class Shooter extends SubsystemBase {
     double max = SmartDashboard.getNumber("Max Output", 0);
     double min = SmartDashboard.getNumber("Min Output", 0);
     double rotations = SmartDashboard.getNumber("Set Rotations", 0);
-
+    */
     // if PID coefficients on SmartDashboard have changed, write new values to controller
     /*if((p != kP)) { m_shootController.setP(p); kP = p; }
     if((i != kI)) { m_shootController.setI(i); kI = i; }
@@ -139,7 +150,8 @@ public class Shooter extends SubsystemBase {
      */
     //m_shootController.setReference(rotations, ControlType.kPosition);
     
-    SmartDashboard.putNumber("SetPoint", rotations);
+    // SmartDashboard.putNumber("SetPoint", rotations);
     //SmartDashboard.putNumber("ProcessVariable", m_leftEncoder.getPosition());
+
   }
 }

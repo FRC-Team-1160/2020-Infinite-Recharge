@@ -198,16 +198,16 @@ public class RobotContainer {
           new IndexerControl(m_intake, -0.65)
         );
 
-      // Run Intake Angle Up
+      // Run Intake Angle Down
       new JoystickButton(m_firstStick, 4)
         .whileHeld(
-          new IntakeAngleControl(m_intake, 0.25)
+          new IntakeAngleControl(m_intake, 0.15)
         );
 
-      // Run Intake Angle Down
+      // Run Intake Angle Up
       new JoystickButton(m_firstStick, 5)
         .whileHeld(
-          new IntakeAngleControl(m_intake, -0.25)
+          new IntakeAngleControl(m_intake, -0.15)
         );
 
       // Run Everything Out
