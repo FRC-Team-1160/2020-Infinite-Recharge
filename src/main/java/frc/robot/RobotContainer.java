@@ -227,7 +227,7 @@ public class RobotContainer {
         );
 
       // Control Panel Position
-      new JoystickButton(m_firstStick, 10)
+      /*new JoystickButton(m_firstStick, 10)
         .whileHeld(
           new SpinnerControl(m_panel, 3, true)
         );
@@ -237,6 +237,25 @@ public class RobotContainer {
         .whileHeld(
           new SpinnerControl(m_panel, 0.25, false)
         );
+      */
+      
+      //Control Panel Free Spin
+      new JoystickButton(m_firstStick, 9)
+        .whileHeld(
+          new SpinnerControl(m_panel, 3, true)
+        );
+
+      //Control Panel Position
+      new JoystickButton(m_firstStick, 10)
+        .whenPressed(
+          new PositionControl(m_panel)
+        );
+
+      //Control Panel Rotation
+      new JoystickButton(m_firstStick, 11)
+      .whenPressed(
+        new RotationControl(m_panel)
+      );
       
       // Belt Up to Shoot
       new JoystickButton(m_secondStick, 1)

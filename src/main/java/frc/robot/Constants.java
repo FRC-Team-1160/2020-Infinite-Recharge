@@ -88,7 +88,6 @@ public final class Constants {
   }
 
   public static final class PanelConstants {
-
     //constants for encoder and rotational control
     public static final int COUNTS_PER_REV = 42;
     //260 should be equal to 26 spins of the gear box shaft, which is equal to 3 1/4 rotations of panel
