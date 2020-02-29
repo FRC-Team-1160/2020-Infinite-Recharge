@@ -22,7 +22,7 @@ public class Feeder extends SubsystemBase {
 
   private final CANSparkMax m_topFeeder, m_bottomFeeder;
 
-  private final DifferentialDrive m_mainFeeder;
+  public final DifferentialDrive m_mainFeeder;
 
   public static Feeder getInstance(){
     if (m_instance == null){
@@ -42,7 +42,11 @@ public class Feeder extends SubsystemBase {
   }
 
   public void feederControl(double feeder){
-    m_mainFeeder.tankDrive(feeder, -feeder);
+    System.out.println("running");
+    // m_mainFeeder.tankDrive(feeder, -feeder);
+    m_topFeeder.set(feeder);
+    m_bottomFeeder.set(-feeder);
+    System.out.println("ran");
   }
 
   @Override

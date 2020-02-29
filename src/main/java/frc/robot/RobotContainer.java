@@ -71,6 +71,17 @@ public class RobotContainer {
         )
       );
 
+    private final Command m_shootBack = 
+      // new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7);
+      new SequentialCommandGroup(
+        // new ParallelCommandGroup(
+        //   new ShooterControl(m_shooter, -0.9),
+        //   new FeederControl(m_feeder, 0.8)
+        // ).withTimeout(5.0),
+        new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7).withTimeout(5.0),
+        new Drive(m_driveTrain).withTimeout(2)
+      );
+
     // A chooser for autonomous commands
     SendableChooser<Command> m_chooser = new SendableChooser<>();
   
@@ -111,6 +122,7 @@ public class RobotContainer {
       m_chooser.addOption("Turn Right", m_turnRight);
       m_chooser.addOption("Turn Left", m_turnLeft);
       m_chooser.addOption("Turn and Shoot", m_turnShoot);
+      m_chooser.addOption("Shoot and Back", m_shootBack);
   
       // Put the chooser on the dashboard
       // Shuffleboard.getTab("Autonomous").add(m_chooser);
@@ -283,6 +295,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-      return m_chooser.getSelected();
+      return m_chooser.getSelected().withTimeout(15);
     }
 }
