@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PortConstants;
 
@@ -22,6 +23,8 @@ public class Intake extends SubsystemBase {
 
   private final CANSparkMax m_indexer, m_intake, m_intakeAngle;
 
+  double k;
+
   public static Intake getInstance(){
     if (m_instance == null){
       m_instance = new Intake();
@@ -31,16 +34,22 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     m_indexer = new CANSparkMax(PortConstants.INDEXER, MotorType.kBrushed);
-    m_intake = new CANSparkMax(PortConstants.INTAKE, MotorType.kBrushless);
+    m_intake = new CANSparkMax(PortConstants.INTAKE, MotorType.kBrushed);
     m_intakeAngle = new CANSparkMax(PortConstants.INTAKE_ANGLE, MotorType.kBrushless);
 
     m_indexer.restoreFactoryDefaults();
     m_intake.restoreFactoryDefaults();
     m_intakeAngle.restoreFactoryDefaults();
+
+    SmartDashboard.putNumber("input number", k);
   }
 
   public void intakeControl(double input){
     m_intake.set(input);
+  }
+
+  public void intakeControl(){
+    m_intake.set(k);
   }
 
   public void indexerControl(double input){
@@ -54,5 +63,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    k = SmartDashboard.getNumber("input number", 0.0);
   }
 }

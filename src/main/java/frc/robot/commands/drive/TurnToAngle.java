@@ -27,7 +27,7 @@ public class TurnToAngle extends PIDCommand {
         // This should return the measurement
         () -> dt.getYaw(),
         // This should return the setpoint (can also be a constant)
-        () -> (dt.getYaw() - Vision.getTx()),
+        () -> (dt.getYaw() + Vision.getTx()),
         // This uses the output
         output -> dt.accept(output)
         );

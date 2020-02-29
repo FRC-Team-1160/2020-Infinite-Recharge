@@ -14,15 +14,18 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PortConstants;
+import frc.robot.commands.drive.TurnToAngle;
 
 public class DriveTrain extends SubsystemBase{
   /**
@@ -42,6 +45,10 @@ public class DriveTrain extends SubsystemBase{
 
   private double straightAngle; 
   private boolean straightAngleSet;
+
+  private Timer m_timer;
+
+  public final DifferentialDriveKinematics kDriveKinematics;
   // private Compressor m_comp;
 
   public static DriveTrain getInstance(){
@@ -103,11 +110,25 @@ public class DriveTrain extends SubsystemBase{
 
     straightAngle = 0.0;
     straightAngleSet = true;
+
+    m_timer = new Timer();
+
+    kDriveKinematics = new DifferentialDriveKinematics(AutoConstants.kTRACKWIDTH);
+
+    SmartDashboard.putNumber("TURN_KP", AutoConstants.TURN_KP);
+    SmartDashboard.putNumber("kS", AutoConstants.kS);
+
   }
   
-  public void tankDrive(final double x, final double z){
+  public void tankDrive(double x, double z, double lowLeft, double lowRight){
 
-    double adaptedZ = DriveConstants.TURN_FACTOR*z;
+    double adaptedZ = 0;
+
+    if(lowLeft > 0 || lowRight > 0){
+      adaptedZ = DriveConstants.TURN_FACTOR*DriveConstants.LOW_DPI*(lowRight-lowLeft);
+    } else {
+      adaptedZ = DriveConstants.TURN_FACTOR*z;
+    }
 
     double rawLeftInput = -x+adaptedZ;
     double rawRightInput = -x-adaptedZ;
@@ -133,31 +154,21 @@ public class DriveTrain extends SubsystemBase{
     // m_rightController.setReference(rightOutput, ControlType.kVoltage);
 
     /*
-    double rawLeftInput = -x+z;
-    double rawRightInput = -x-z;
-
-    double correction = 0.0;
-
-    if(z<=DriveConstants.ANGLE_THRESHOLD && z>=-DriveConstants.ANGLE_THRESHOLD){
-      if(straightAngleSet == false){
-        straightAngle = m_gyro.getAngle();
-        straightAngleSet = true;
-      }
-      double currentAngle = m_gyro.getAngle();
-      correction = DriveConstants.kP_DRIVE * (currentAngle-straightAngle);
-    }else{
-      straightAngleSet = false;
-    }
+      double rawLeftInput = -x+z;
+      double rawRightInput = -x-z;
     */
 
+    double correction = 0.0;
+    
     double finalOutputLeft = scaleDriveInput(leftOutput/DriveConstants.VOLTAGE_TO_SPEED, leftDirection);
     double finalOutputRight = scaleDriveInput(rightOutput/DriveConstants.VOLTAGE_TO_SPEED, rightDirection);
+    
     double[] finaloutputs = {finalOutputLeft, finalOutputRight};
 
     SmartDashboard.putNumberArray("finaloutputs", finaloutputs);
 
     // m_mainDrive.tankDrive(scaleDriveInput(rawLeftInput), scaleDriveInput(rawRightInput)); // x is positive when left joystick pulled down
-    m_mainDrive.tankDrive(finalOutputLeft, finalOutputRight); // x is positive when left joystick pulled down
+    m_mainDrive.tankDrive(finalOutputLeft, finalOutputRight, false); // x is positive when left joystick pulled down
 
     // m_mainDrive.tankDrive(rawLeftInput, rawRightInput);
     
@@ -185,9 +196,10 @@ public class DriveTrain extends SubsystemBase{
 
   public void accept(double voltage) // moves each gearbox accordingly
   {
-    voltage = MathUtil.clamp(voltage, -0.5, 0.5);
-    m_backLeft.setVoltage(voltage);
-    m_backRight.setVoltage(voltage);
+    double sign = Math.signum(voltage);
+    m_backLeft.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
+    m_backRight.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
+    SmartDashboard.putNumber("voltage in turn", voltage);
   }
 
   @Override
@@ -200,5 +212,8 @@ public class DriveTrain extends SubsystemBase{
       m_backRight.getBusVoltage(),
     };
     // SmartDashboard.putNumberArray("outputs", outputs);
+    // AutoConstants.TURN_KP = SmartDashboard.getNumber("TURN_KP", 0.0);
+    // AutoConstants.kS = SmartDashboard.getNumber("kS", 0.0);
+    // m_turnController.setP(AutoConstants.TURN_KP);
   }
 }

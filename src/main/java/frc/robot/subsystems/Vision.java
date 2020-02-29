@@ -189,7 +189,6 @@ public class Vision{
   //delta height = 212.09 - 49.53 = 162.56 + 30.48 = 193.04 cm
 
 
-
   public static double getRPM(double velocity){
     return AutoConstants.kVtoRPM * velocity;
   }

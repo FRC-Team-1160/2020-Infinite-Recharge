@@ -66,9 +66,9 @@ public class RobotContainer {
       new SequentialCommandGroup(
         new TurnToAngle(m_driveTrain, 0.0),
         new ParallelCommandGroup(
-          new FeederControl(m_feeder, 0.8),
-          new ShooterControl(m_shooter, -0.72)
-        ).withTimeout(5.0)
+          new FeederControl(m_feeder, 0.8).withTimeout(5.0),
+          new ShooterControl(m_shooter, -0.72).withTimeout(5.0)
+        )
       );
 
     // A chooser for autonomous commands
@@ -94,7 +94,7 @@ public class RobotContainer {
       // Configure default commands
       
       m_driveTrain.setDefaultCommand(new RunCommand(
-        () -> m_driveTrain.tankDrive(m_mainStick.getRawAxis(1), m_mainStick.getRawAxis(4)),
+        () -> m_driveTrain.tankDrive(m_mainStick.getRawAxis(1), m_mainStick.getRawAxis(4), m_mainStick.getRawAxis(2), m_mainStick.getRawAxis(3)),
         m_driveTrain)
       );
 
@@ -130,13 +130,13 @@ public class RobotContainer {
           // .whenPressed(new GrabHatch(m_hatchSubsystem));
       
       
-      new JoystickButton(m_mainStick, Button.kBumperLeft.value)
+      new JoystickButton(m_mainStick, Button.kBumperRight.value)
         .whenPressed(
           new SequentialCommandGroup(
             new TurnToAngle(m_driveTrain)
           )
         );
-
+      
       // Limelight LED Toggle
       new JoystickButton(m_mainStick, Button.kA.value)
         .whenPressed(
@@ -163,15 +163,15 @@ public class RobotContainer {
 
       
       // Run Intake In (Driver)
-      new JoystickButton(m_mainStick, Button.kBumperRight.value)
+      new JoystickButton(m_mainStick, Button.kBumperLeft.value)
         .whileHeld(
-          new IntakeControl(m_intake, -0.95)
+          new IntakeControl(m_intake, -0.5)
         );
 
       // Run Intake In
       new JoystickButton(m_firstStick, 1)
         .whileHeld(
-          new IntakeControl(m_intake, -0.95)
+          new IntakeControl(m_intake, -0.5)
         );
 
       // Run Indexer Out
@@ -237,22 +237,31 @@ public class RobotContainer {
         );
 
       // Run Shooter Mid Speed
-      new JoystickButton(m_secondStick, 3)
+      new JoystickButton(m_secondStick, 3)     // it was squared preserving sign so these are the true values from before
         .whileHeld(
-          new ShooterControl(m_shooter, -0.72)
+          new ShooterControl(m_shooter, -0.6) // 0.5184
         );
 
       // Run Shooter Low Speed
       new JoystickButton(m_secondStick, 4)
         .whileHeld(
-          new ShooterControl(m_shooter, -0.64)
+          new ShooterControl(m_shooter, -0.38) // 0.4096
         );
 
+     
       // Run Shooter High Speed
       new JoystickButton(m_secondStick, 5)
         .whileHeld(
-          new ShooterControl(m_shooter, -0.9)
+          new ShooterControl(m_shooter, -0.9)  // 0.81
         );
+      
+         /*
+       // Run Shooter High Speed
+       new JoystickButton(m_secondStick, 5)
+       .whileHeld(
+         new PIDShooterControl(m_shooter, -0.9)  // 0.81
+       );
+       */
 
       // Run Climber Down
       new JoystickButton(m_secondStick, 6)
