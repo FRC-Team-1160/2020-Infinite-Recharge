@@ -7,48 +7,47 @@
 
 package frc.robot.commands.panel;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Panel;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.PanelConstants;
 
-public class SpinnerControl extends CommandBase {
-  /**
-   * Creates a new SpinnerControl.
-   */
-  private Panel m_panel;
-  private double m_input;
-  private boolean m_volt;
+public class RotationControl extends CommandBase {
+  // Creates a new Rotation.
+  private final Panel pan;
 
-  public SpinnerControl(Panel panel, double input, boolean volt) {
+  public RotationControl(Panel pan) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_panel = panel;
-    m_input = input;
-    m_volt = volt;
+    addRequirements(pan);
+    this.pan = pan;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    pan.getPanelEncoder().setPosition(0);
+    pan.spin(1.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_volt){
-      m_panel.voltageSpin(m_input);
-    }else{
-      m_panel.spin(m_input);
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_panel.spin(0);
+    //stop the motor
+    pan.spin(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    //checks to see if the panelMotor has rotated enough times
+    if(pan.getPanelEncoder().getPosition() > PanelConstants.MIN_REVS){
+      return true;
+    } else {
+      return false;
+    }
   }
 }
