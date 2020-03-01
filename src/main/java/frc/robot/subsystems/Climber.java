@@ -41,7 +41,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void climbControl(double speed){
-    m_climber.set(speed);
+    m_climber.setVoltage(speed);
   }
 
   @Override

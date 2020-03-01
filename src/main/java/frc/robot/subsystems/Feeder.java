@@ -50,7 +50,7 @@ public class Feeder extends SubsystemBase {
   public void feederControl(double feeder){
     // System.out.println("running");
     // m_mainFeeder.tankDrive(feeder, -feeder);
-    m_topFeeder.set(feeder);
+    m_topFeeder.setVoltage(feeder);
     //m_bottomFeeder.set(-feeder);
     // System.out.println("ran");
   }

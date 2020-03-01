@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -66,21 +67,26 @@ public class RobotContainer {
       new SequentialCommandGroup(
         new TurnToAngle(m_driveTrain, 0.0),
         new ParallelCommandGroup(
-          new FeederControl(m_feeder, 0.8).withTimeout(5.0),
-          new ShooterControl(m_shooter, -0.72).withTimeout(5.0)
+          new FeederControl(m_feeder, 0.8 * 12).withTimeout(5.0),
+          new ShooterControl(m_shooter, -0.72 * 12).withTimeout(5.0)
         )
       );
 
     private final Command m_shootBack = 
       // new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7);
       new SequentialCommandGroup(
-        // new ParallelCommandGroup(
-        //   new ShooterControl(m_shooter, -0.9),
-        //   new FeederControl(m_feeder, 0.8)
-        // ).withTimeout(5.0),
-        new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7).withTimeout(5.0),
-        new Drive(m_driveTrain).withTimeout(2)
+        //  new ParallelCommandGroup(
+        //    new ShooterControl(m_shooter, -0.9),
+        //    new RunCommand(
+        //       () -> m_feeder.feederControl(0.3),
+        //       m_feeder)
+        //  ).withTimeout(5.0),
+        new TurnToAngle(m_driveTrain),
+        new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
+        new Drive(m_driveTrain, 0.5).withTimeout(2) // no * 12 because it is still .set, not .setVoltage
       );
+
+    private final Command m_back = new Drive(m_driveTrain, 0.5).withTimeout(2); // no * 12 because it is still .set, not .setVoltage
 
     // A chooser for autonomous commands
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -110,7 +116,7 @@ public class RobotContainer {
       );
 
       m_feeder.setDefaultCommand(new RunCommand(
-        () -> m_feeder.feederControl(m_secondStick.getRawAxis(1)),
+        () -> m_feeder.feederControl(m_secondStick.getRawAxis(1) * 11),
         m_feeder)
       );
 
@@ -177,53 +183,53 @@ public class RobotContainer {
       // Run Intake In (Driver)
       new JoystickButton(m_mainStick, Button.kBumperLeft.value)
         .whileHeld(
-          new IntakeControl(m_intake, -0.4)//-0.3,-0.5
+          new IntakeControl(m_intake, -0.4 * 12)//-0.3,-0.5
         );
 
       // Run Intake In
       new JoystickButton(m_firstStick, 1)
         .whileHeld(
-          new IntakeControl(m_intake, -0.4)//-0.3,-0.5
+          new IntakeControl(m_intake, -0.4 * 12)//-0.3,-0.5
         );
 
       // Run Indexer Out
       new JoystickButton(m_firstStick, 2)
         .whileHeld(
-          new IndexerControl(m_intake, 0.55)
+          new IndexerControl(m_intake, 0.55 * 12)
         );
 
       // Run Indexer In
       new JoystickButton(m_firstStick, 3)
         .whileHeld(
-          new IndexerControl(m_intake, -0.65)
+          new IndexerControl(m_intake, -0.65 * 12)
         );
 
       // Run Intake Angle Down
       new JoystickButton(m_firstStick, 4)
         .whileHeld(
-          new IntakeAngleControl(m_intake, 0.15)
+          new IntakeAngleControl(m_intake, 0.15 * 12)
         );
 
       // Run Intake Angle Up
       new JoystickButton(m_firstStick, 5)
         .whileHeld(
-          new IntakeAngleControl(m_intake, -0.15)
+          new IntakeAngleControl(m_intake, -0.15 * 12)
         );
 
       // Run Everything Out
       new JoystickButton(m_firstStick, 7)
         .whileHeld(
           new ParallelCommandGroup(
-            new IntakeControl(m_intake, 0.75),
-            new IndexerControl(m_intake, 0.3),
-            new FeederControl(m_feeder, -0.6)
+            new IntakeControl(m_intake, 0.75 * 12),
+            new IndexerControl(m_intake, 0.3 * 12),
+            new FeederControl(m_feeder, -0.6 * 12)
           )
         );
 
       // Run Intake Out
       new JoystickButton(m_firstStick, 8)
         .whileHeld(
-          new IntakeControl(m_intake, 0.75)
+          new IntakeControl(m_intake, 0.75 * 12)
         );
 
       // Control Panel Position
@@ -261,29 +267,29 @@ public class RobotContainer {
       new JoystickButton(m_secondStick, 1)
         .whileHeld(
           new ParallelCommandGroup(
-            new FeederControl(m_feeder, 0.8),
-            new IndexerControl(m_intake, -0.3),
-            new IntakeControl(m_intake, -0.75)
+            new FeederControl(m_feeder, 0.8 * 12),
+            new IndexerControl(m_intake, -0.3 * 12),
+            new IntakeControl(m_intake, -0.75 * 12)
           )
         );
 
       // Run Shooter Mid Speed
       new JoystickButton(m_secondStick, 3)     // it was squared preserving sign so these are the true values from before
         .whileHeld(
-          new ShooterControl(m_shooter, -0.6) // 0.5184
+          new ShooterControl(m_shooter, -0.5 * 12) // 0.5184 // -0.6
         );
 
       // Run Shooter Low Speed
       new JoystickButton(m_secondStick, 4)
         .whileHeld(
-          new ShooterControl(m_shooter, -0.38) // 0.4096
+          new ShooterControl(m_shooter, -0.4 * 12) // 0.4096 // -0.38
         );
 
      
       // Run Shooter High Speed
       new JoystickButton(m_secondStick, 5)
         .whileHeld(
-          new ShooterControl(m_shooter, -0.9)  // 0.81
+          new ShooterControl(m_shooter, -0.9 * 12)  // 0.81
         );
       
          /*
@@ -297,13 +303,13 @@ public class RobotContainer {
       // Run Climber Down
       new JoystickButton(m_secondStick, 6)
         .whileHeld(
-          new ClimbControl(m_climber, 0.5)
+          new ClimbControl(m_climber, 0.5 * 12)
         );
 
       // Run Climber Up
       new JoystickButton(m_secondStick, 7)
         .whileHeld(
-          new ClimbControl(m_climber, -0.5)
+          new ClimbControl(m_climber, -0.5 * 12)
         );
     }
   

@@ -91,7 +91,7 @@ public class Panel extends SubsystemBase {
   }
   
   public void spin(double speed) {
-    m_spinner.set(speed);
+    m_spinner.setVoltage(speed);
   }
 
   public void voltageSpin(double input) {
@@ -147,6 +147,7 @@ public class Panel extends SubsystemBase {
     //setTargetColor();
 
 
-    SmartDashboard.putNumber("encoder", m_spinnerEncoder.getPosition());
+    SmartDashboard.putNumber("Encoder Position", m_spinnerEncoder.getPosition());
+    SmartDashboard.putNumber("Encoder Counts per Revolution", m_spinnerEncoder.getCountsPerRevolution());
   }
 }

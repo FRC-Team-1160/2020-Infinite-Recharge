@@ -12,15 +12,17 @@ import frc.robot.subsystems.DriveTrain;
 
 public class Drive extends CommandBase {
     private final DriveTrain m_driveTrain;
+    private double m_input;
 
-    public Drive(DriveTrain m_driveTrain) {
+    public Drive(DriveTrain m_driveTrain, double input) {
         this.m_driveTrain = m_driveTrain;
         super.setName("Drive");
         super.addRequirements(this.m_driveTrain);
+        this.m_input = input;
     }
     
     @Override
     public void execute() {
-        m_driveTrain.tankDrive(0.5, 0.0, 0.0, 0.0);
+        m_driveTrain.tankDrive(input, 0.0, 0.0, 0.0);
     }
 }

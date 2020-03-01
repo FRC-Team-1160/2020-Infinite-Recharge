@@ -56,19 +56,19 @@ public class Intake extends SubsystemBase {
   }
 
   public void intakeControl(double input){
-    m_intake.set(input);
+    m_intake.setVoltage(input);
   }
 
   public void intakeControl(){
-    m_intake.set(k);
+    m_intake.setVoltage(k);
   }
 
   public void indexerControl(double input){
-    m_indexer.set(input);
+    m_indexer.setVoltage(input);
   }
 
   public void intakeAngleControl(double input){
-    m_intakeAngle.set(input);
+    m_intakeAngle.setVoltage(input);
   }
   
   @Override
