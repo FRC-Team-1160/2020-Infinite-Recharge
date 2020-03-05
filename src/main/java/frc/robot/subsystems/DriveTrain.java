@@ -18,7 +18,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
@@ -38,6 +42,10 @@ public class DriveTrain extends SubsystemBase{
   private final CANSparkMax m_frontLeft, m_middleLeft, m_backLeft, m_frontRight, m_middleRight, m_backRight;
   private CANEncoder m_leftEncoder, m_rightEncoder;
   private CANPIDController m_leftController, m_rightController;
+
+  private DifferentialDrive m_drive;
+
+  private final DifferentialDriveOdometry m_odometry;;
 
   public AHRS m_gyro;
 
@@ -100,8 +108,15 @@ public class DriveTrain extends SubsystemBase{
     m_leftEncoder = m_backLeft.getEncoder();
     m_rightEncoder = m_backRight.getEncoder();
 
+    // m_leftEncoder.setPositionConversionFactor(factor);
+
+    // important
+    // m_leftEncoder.setVelocityConversionFactor(factor);
+
     m_leftController = m_backLeft.getPIDController();
     m_rightController = m_backRight.getPIDController();
+
+    m_drive = new DifferentialDrive(m_backLeft, m_backRight);
 
     m_gyro = new AHRS(Port.kMXP);
  
@@ -120,10 +135,20 @@ public class DriveTrain extends SubsystemBase{
 
     kDriveKinematics = new DifferentialDriveKinematics(AutoConstants.kTRACKWIDTH);
 
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getYaw()));
+
     // SmartDashboard.putNumber("TURN_KP", AutoConstants.TURN_KP);
     //SmartDashboard.putNumber("kS", AutoConstants.kS);
     SmartDashboard.putNumber("KP", grandKP);
 
+  }
+
+  public void voltageDrive(double voltage) // moves each gearbox accordingly
+  {
+    double sign = Math.signum(voltage);
+    m_backLeft.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
+    m_backRight.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
+    // SmartDashboard.putNumber("voltage in turn", voltage);
   }
   
   public void tankDrive(double x, double z, double lowLeft, double lowRight){
@@ -180,6 +205,7 @@ public class DriveTrain extends SubsystemBase{
     m_backLeft.setVoltage(outputs[0]);
     m_backRight.setVoltage(outputs[1]);
 
+    m_drive.feed();
   }
 
   public double[] scale(double x, double z){    
@@ -220,28 +246,63 @@ public class DriveTrain extends SubsystemBase{
     return 0.5*Math.pow(input, 3) + 0.5*Math.pow(input, 1);
   }
 
+    /**
+   * Returns the current wheel speeds of the robot.
+   *
+   * @return The current wheel speeds.
+   */
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
+  }
+
+  /**
+   * Resets the Yaw of the Gyro.
+   *
+   */
+
   public void resetYaw(){
     m_gyro.reset();
   }
 
+  /**
+   * Returns the yaw of the Gyro.
+   *
+   * @return The yaw.
+   */
   public double getYaw() {
     return m_gyro.getYaw();
   }
 
+  /**
+   * Resets the yaw of the Gyro.
+   *
+   */
+  public void zeroYaw() {
+    m_gyro.reset();
+  }
+
+    /**
+   * Returns the pitch of the Gyro.
+   *
+   * @return The pitch.
+   */
   public double getPitch(){
     return m_gyro.getPitch();
   }
 
-  public void accept(double voltage) // moves each gearbox accordingly
-  {
-    double sign = Math.signum(voltage);
-    m_backLeft.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
-    m_backRight.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
-    // SmartDashboard.putNumber("voltage in turn", voltage);
+  /**
+   * Returns the currently-estimated pose of the robot.
+   *
+   * @return The pose.
+   */
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
   }
-
+  
   @Override
   public void periodic() {
+
+    /*
     double[] outputs = {m_frontLeft.getBusVoltage(), 
       m_middleLeft.getBusVoltage(),
       m_backLeft.getBusVoltage(),
@@ -249,6 +310,8 @@ public class DriveTrain extends SubsystemBase{
       m_middleRight.getBusVoltage(),
       m_backRight.getBusVoltage(),
     };
+    */
+
     // SmartDashboard.putNumberArray("outputs", outputs);
     // AutoConstants.TURN_KP = SmartDashboard.getNumber("TURN_KP", 0.0);
     // AutoConstants.kS = SmartDashboard.getNumber("kS", 0.0);
@@ -257,5 +320,7 @@ public class DriveTrain extends SubsystemBase{
     SmartDashboard.putNumber("KP CHECK", grandKP);
 
     grandKP = SmartDashboard.getNumber("KP", 0.0);
+
+    m_odometry.update(Rotation2d.fromDegrees(getYaw()), m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
   }
 }

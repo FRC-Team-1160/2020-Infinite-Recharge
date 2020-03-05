@@ -27,6 +27,7 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Panel;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -64,13 +65,16 @@ public class RobotContainer {
     // A complex auto routine that drives forward, drops a hatch, and then drives backward.
     //private final Command m_complexAuto = new ComplexAuto(m_robotDrive, m_hatchSubsystem);
     private final Command m_turnShoot =
-      new SequentialCommandGroup(
-        new TurnToAngle(m_driveTrain, 0.0),
-        new ParallelCommandGroup(
-          new FeederControl(m_feeder, 0.8 * 12).withTimeout(5.0),
-          new ShooterControl(m_shooter, -0.72 * 12).withTimeout(5.0)
-        )
-      );
+    new SequentialCommandGroup(
+      //  new ParallelCommandGroup(
+      //    new ShooterControl(m_shooter, -0.9),
+      //    new RunCommand(
+      //       () -> m_feeder.feederControl(0.3),
+      //       m_feeder)
+      //  ).withTimeout(5.0),
+      new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
+      new Drive(m_driveTrain, 0.5).withTimeout(2) // no * 12 because it is still .set, not .setVoltage
+    );
 
     private final Command m_shootBack = 
       // new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7);
@@ -105,6 +109,8 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
+      Vision.setPipeline(1);
+
       // Configure the button bindings
       configureButtonBindings();
   
@@ -127,8 +133,8 @@ public class RobotContainer {
 
       m_chooser.addOption("Turn Right", m_turnRight);
       m_chooser.addOption("Turn Left", m_turnLeft);
-      m_chooser.addOption("Turn and Shoot", m_turnShoot);
-      m_chooser.addOption("Shoot and Back", m_shootBack);
+      m_chooser.addOption("Shoot and Back", m_turnShoot);
+      m_chooser.addOption("Turn Shoot and Back", m_shootBack);
   
       // Put the chooser on the dashboard
       // Shuffleboard.getTab("Autonomous").add(m_chooser);
@@ -282,7 +288,7 @@ public class RobotContainer {
       // Run Shooter Low Speed
       new JoystickButton(m_secondStick, 4)
         .whileHeld(
-          new ShooterControl(m_shooter, -0.4 * 12) // 0.4096 // -0.38
+          new ShooterControl(m_shooter, -0.35 * 12) // 0.4096 // -0.38
         );
 
      

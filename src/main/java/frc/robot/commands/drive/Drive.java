@@ -23,6 +23,6 @@ public class Drive extends CommandBase {
     
     @Override
     public void execute() {
-        m_driveTrain.tankDrive(input, 0.0, 0.0, 0.0);
+        m_driveTrain.tankDrive(m_input, 0.0, 0.0, 0.0);
     }
 }
