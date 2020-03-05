@@ -40,6 +40,10 @@ public class Climber extends SubsystemBase {
     m_climber.restoreFactoryDefaults();
   }
 
+  /**
+   * Controls the Climber motor.
+   */
+
   public void climbControl(double speed){
     m_climber.setVoltage(speed);
   }

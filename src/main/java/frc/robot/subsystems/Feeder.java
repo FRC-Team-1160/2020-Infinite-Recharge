@@ -10,7 +10,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.PortConstants;
@@ -47,12 +46,13 @@ public class Feeder extends SubsystemBase {
     m_bottomFeeder.follow(m_topFeeder);
   }
 
+  /**
+   * Controls the feeder of the robot.
+   *
+   */
   public void feederControl(double feeder){
-    // System.out.println("running");
-    // m_mainFeeder.tankDrive(feeder, -feeder);
     m_topFeeder.setVoltage(feeder);
-    //m_bottomFeeder.set(-feeder);
-    // System.out.println("ran");
+
   }
 
   @Override

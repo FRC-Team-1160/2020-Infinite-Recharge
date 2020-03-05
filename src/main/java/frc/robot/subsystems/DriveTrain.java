@@ -12,10 +12,9 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.ControlType;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -25,13 +24,11 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PortConstants;
 import frc.robot.Constants.PortConstantsFinal;
-import frc.robot.commands.drive.TurnToAngle;
 
 public class DriveTrain extends SubsystemBase{
   /**
@@ -143,6 +140,12 @@ public class DriveTrain extends SubsystemBase{
 
   }
 
+  /**
+   * Manual drive of the robot.
+   *
+   * @return The pose.
+   */
+
   public void voltageDrive(double voltage) // moves each gearbox accordingly
   {
     double sign = Math.signum(voltage);
@@ -151,6 +154,10 @@ public class DriveTrain extends SubsystemBase{
     // SmartDashboard.putNumber("voltage in turn", voltage);
   }
   
+  /**
+   * Manual Drive of the robot.
+   *
+   */
   public void tankDrive(double x, double z, double lowLeft, double lowRight){
 
     double adaptedZ = 0;
@@ -205,9 +212,15 @@ public class DriveTrain extends SubsystemBase{
     m_backLeft.setVoltage(outputs[0]);
     m_backRight.setVoltage(outputs[1]);
 
+    // important: might stop jittering!s
     m_drive.feed();
   }
 
+  /**
+   * Takes input and accounts for kS and kV
+   *
+   * @return the corrected output.
+   */
   public double[] scale(double x, double z){    
     double rawLeftInput = -x+z;
     double rawRightInput = x+z;
@@ -216,8 +229,8 @@ public class DriveTrain extends SubsystemBase{
     double leftDirection = Math.signum(rawLeftInput);
     double rightDirection = Math.signum(rawRightInput);
 
-    double leftOutput = AutoConstants.kS*leftDirection + AutoConstants.kV*(rawLeftInput);
-    double rightOutput = AutoConstants.kS*rightDirection + AutoConstants.kV*(rawRightInput);
+    double leftOutput = AutoConstants.kS*leftDirection + AutoConstants.kV_CONCRETE *(rawLeftInput);
+    double rightOutput = AutoConstants.kS*rightDirection + AutoConstants.kV_CONCRETE *(rawRightInput);
 
     double[] rawInputs = {rawLeftInput, rawRightInput};
     double[] directions = {leftDirection, rightDirection};
@@ -242,6 +255,11 @@ public class DriveTrain extends SubsystemBase{
     return finalOutputs;
   }
 
+  /**
+   * Reduces speeds at lower inputs.
+   *
+   * @return 0.5x^3 + 0.5x.
+   */
   public double cubic(double input){
     return 0.5*Math.pow(input, 3) + 0.5*Math.pow(input, 1);
   }

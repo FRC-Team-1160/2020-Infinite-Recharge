@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.util.Units;
  */
 public final class Constants {
   // Units are m kg s unless otherwise specified
-  public static final boolean isFinal = false;
+  public static final boolean isFinal = true;
 
   public static final class PortConstants {
     // CAN ID 
@@ -58,10 +58,10 @@ public final class Constants {
 
     public static final int CLIMBER = 13;
 
-    public static final int LEFT_SHOOTER = 15;
+    public static final int LEFT_SHOOTER = 14;
     public static final int RIGHT_SHOOTER = 7;
 
-    public static final int TOP_FEEDER = 14;
+    public static final int TOP_FEEDER = 15;
     public static final int BOTTOM_FEEDER = 8;
 
     public static final int SPINNER = 12;
@@ -77,17 +77,6 @@ public final class Constants {
     public static final double LOW_DPI = 0.35;
   }
 
-  public static final class FieldConstants {
-    public static double INNER_PORT_HEIGHT = 2.4257; // meters
-    public static double LIMELIGHT_HEIGHT = 0.4953; // meters
-    public static double RELATIVE_INNER_PORT_HEIGHT = INNER_PORT_HEIGHT - LIMELIGHT_HEIGHT; //meters; calculation in vision.java
-  }
-
-  public static final class VisionConstants {
-    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES = 28.414; //20
-    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_RADIANS = Units.degreesToRadians(LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES);
-  }
-
   public static final class PanelConstants {
     //constants for encoder and rotational control
     public static final int COUNTS_PER_REV = 42;
@@ -101,7 +90,8 @@ public final class Constants {
     // Drive
     public static double kS = 0.1; // 0.390; //0.130 //0.402
     public static double kS_CONCRETE = 0.27;
-    public static double kV = 3.59;
+    public static double kV = 3.59;    
+    public static double kV_CONCRETE  = 3.;
     public static double kA = 0.458;
     public static double kRSQUARED = 0.945;
     public static double kTRACKWIDTH = 0.5842; //0.728585410;
@@ -143,14 +133,12 @@ public final class Constants {
   public static final class AutoConstantsFinal {
 
     // Drive
-    public static double kS = 0.1;
+    public static double kS = 0;
     public static double kS_CONCRETE = 0.27;
     public static double kV = 3.59;
     public static double kA = 0.458;
     public static double kRSQUARED = 0.945;
     public static double kTRACKWIDTH = 0.5842; //0.728585410;
-
-
 
     public static double kP_POSITION = 4.13;
     public static double kD_POSITION = 1850.0;
@@ -192,4 +180,16 @@ public final class Constants {
     public static final int thirdStickPort = 3;
 
   }
+
+  public static final class FieldConstants {
+    public static double INNER_PORT_HEIGHT = 2.4257; // meters
+    public static double LIMELIGHT_HEIGHT = 0.4953; // meters
+    public static double RELATIVE_INNER_PORT_HEIGHT = 1.8542; // INNER_PORT_HEIGHT - LIMELIGHT_HEIGHT; //meters; calculation in vision.java
+  }
+
+  public static final class VisionConstants {
+    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES = 28.414; //20
+    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_RADIANS = Units.degreesToRadians(LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES);
+  }
+
 }
