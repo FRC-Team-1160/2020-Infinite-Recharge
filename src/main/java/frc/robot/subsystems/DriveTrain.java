@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -31,7 +32,9 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PortConstants;
 import frc.robot.Constants.PortConstantsFinal;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.drive.TurnToAngle;
+import frc.robot.subsystems.Vision;
 
 public class DriveTrain extends SubsystemBase{
   /**
@@ -44,7 +47,8 @@ public class DriveTrain extends SubsystemBase{
   private CANPIDController m_leftController, m_rightController;
 
   private DifferentialDrive m_drive;
-
+  public Vision m_vision;
+  public Sendable m_visionDistance;
   private final DifferentialDriveOdometry m_odometry;;
 
   public AHRS m_gyro;
@@ -108,6 +112,10 @@ public class DriveTrain extends SubsystemBase{
     m_leftEncoder = m_backLeft.getEncoder();
     m_rightEncoder = m_backRight.getEncoder();
 
+    Vision m_vision2 = m_vision;
+    m_visionDistance = m_vision2.getDistance(VisionConstants.LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES);
+    SmartDashboard.putData("Distance Limelight", m_visionDistance);
+
     // m_leftEncoder.setPositionConversionFactor(factor);
 
     // important
@@ -125,6 +133,9 @@ public class DriveTrain extends SubsystemBase{
     m_turnController.setIntegratorRange(AutoConstants.MIN_INGL, AutoConstants.MAX_INGL);
     m_turnController.setTolerance(AutoConstants.TOLERANCE);
     m_turnController.setSetpoint(0);
+
+    
+
 
     SmartDashboard.putData("Turn Controller", m_turnController);
 

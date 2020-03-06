@@ -9,9 +9,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Sendable;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
+
 
 public class Vision{
   /**
@@ -176,7 +178,7 @@ public class Vision{
   // d = h/tan(limelight angle +theta)
 
   // TODO: account for ang displacement of robot (gyro.getPitch)
-  public static double getDistance(double angularDisplacement){
+  public static Sendable getDistance(double angularDisplacement){
     return FieldConstants.RELATIVE_INNER_PORT_HEIGHT/(Math.tan(Math.toRadians(VisionConstants.LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES + angularDisplacement)));
   }
 
