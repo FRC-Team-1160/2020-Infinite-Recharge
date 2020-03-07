@@ -289,6 +289,7 @@ public class RobotContainer {
           new SpinnerControl(m_panel, 3, true)
         );
 
+      /*
       //Control Panel Position
       new JoystickButton(m_firstStick, 10)
         .whenPressed(
@@ -300,6 +301,7 @@ public class RobotContainer {
       .whenPressed(
         new RotationControl(m_panel, 1.0, true)
       );
+      */
       
       // Belt Up to Shoot
       new JoystickButton(m_secondStick, 8)

@@ -104,7 +104,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shooterControl(double input){
-    m_leftShooter.setVoltage(input);
+    m_leftShooter.setVoltage(-input);
   
   }
 

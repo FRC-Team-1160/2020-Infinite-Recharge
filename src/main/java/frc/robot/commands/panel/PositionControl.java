@@ -18,7 +18,7 @@ public class PositionControl extends CommandBase {
   
   public PositionControl(Panel panel, double input, boolean volt) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_panel);
+    // addRequirements(m_panel);
     m_panel = panel;
     m_input = input;
     m_volt = volt;

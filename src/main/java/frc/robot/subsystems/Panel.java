@@ -114,6 +114,7 @@ public class Panel extends SubsystemBase {
     return m_spinnerEncoder;
   }
  
+  /*
   public void setTargetColor(){
     switch (m_gameData.charAt(0)){
       case 'B' :
@@ -138,13 +139,13 @@ public class Panel extends SubsystemBase {
         break;
     }
   }
- 
+ */
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     m_gameData = DriverStation.getInstance().getGameSpecificMessage();
     SmartDashboard.putString("Game Data (Target Color)", m_gameData);
-    setTargetColor();
+ //   setTargetColor();
  
  
     SmartDashboard.putNumber("Encoder Position", m_spinnerEncoder.getPosition());

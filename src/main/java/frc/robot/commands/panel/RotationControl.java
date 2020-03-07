@@ -19,7 +19,7 @@ public class RotationControl extends CommandBase {
  
   public RotationControl(Panel panel, double input, boolean volt) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(panel);
+    // addRequirements(panel);
     m_panel = panel;
     m_input = input;
     m_volt = volt;

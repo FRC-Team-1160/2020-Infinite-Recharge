@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.util.Units;
  */
 public final class Constants {
   // Units are m kg s unless otherwise specified
-  public static final boolean isFinal = true;
+
+  // IMPORTANT
+  public static final boolean isFinal = false;
 
   public static final class PortConstants {
     // CAN ID 
