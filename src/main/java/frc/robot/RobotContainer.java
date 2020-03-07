@@ -1,40 +1,42 @@
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.AutoConstantsFinal;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.climb.ClimbControl;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.drive.TurnToAngle;
 import frc.robot.commands.feed.FeederControl;
-import frc.robot.commands.intake.IndexerControl;
-import frc.robot.commands.intake.IntakeAngleControl;
-import frc.robot.commands.intake.IntakeControl;
-import frc.robot.commands.panel.PositionControl;
-import frc.robot.commands.panel.RotationControl;
-import frc.robot.commands.panel.SpinnerControl;
-import frc.robot.commands.shoot.ShootGroupControl;
-import frc.robot.commands.shoot.ShooterControl;
-import frc.robot.commands.vision.LimelightCameraToggle;
-import frc.robot.commands.vision.LimelightLightToggle;
-import frc.robot.commands.vision.LimelightSnapshotToggle;
-import frc.robot.commands.vision.LimelightStreamToggle;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Panel;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
+import frc.robot.commands.intake.*;
+import frc.robot.commands.panel.*;
+import frc.robot.commands.shoot.*;
+import frc.robot.commands.vision.*;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -71,7 +73,7 @@ public class RobotContainer {
       new TurnToAngle(m_driveTrain, -45);
     // A complex auto routine that drives forward, drops a hatch, and then drives backward.
     //private final Command m_complexAuto = new ComplexAuto(m_robotDrive, m_hatchSubsystem);
-    private final Command m_turnShoot =
+    private final Command m_shootBack =
     new SequentialCommandGroup(
       //  new ParallelCommandGroup(
       //    new ShooterControl(m_shooter, -0.9),
@@ -83,7 +85,7 @@ public class RobotContainer {
       new Drive(m_driveTrain, 0.5).withTimeout(2) // no * 12 because it is still .set, not .setVoltage
     );
 
-    private final Command m_shootBack = 
+    private final Command m_turnShootBack = 
       // new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7);
       new SequentialCommandGroup(
         //  new ParallelCommandGroup(
@@ -92,12 +94,26 @@ public class RobotContainer {
         //       () -> m_feeder.feederControl(0.3),
         //       m_feeder)
         //  ).withTimeout(5.0),
-        new TurnToAngle(m_driveTrain),
+        new TurnToAngle(m_driveTrain).withTimeout(5),
         new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
         new Drive(m_driveTrain, 0.5).withTimeout(2) // no * 12 because it is still .set, not .setVoltage
       );
 
-    private final Command m_back = new Drive(m_driveTrain, 0.5).withTimeout(2); // no * 12 because it is still .set, not .setVoltage
+    private final Command m_turnShootBackMore = 
+      // new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7);
+      new SequentialCommandGroup(
+        //  new ParallelCommandGroup(
+        //    new ShooterControl(m_shooter, -0.9),
+        //    new RunCommand(
+        //       () -> m_feeder.feederControl(0.3),
+        //       m_feeder)
+        //  ).withTimeout(5.0),
+        new TurnToAngle(m_driveTrain).withTimeout(5),
+        new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
+        new Drive(m_driveTrain, 0.5).withTimeout(3) // no * 12 because it is still .set, not .setVoltage
+      );
+
+    // private final Command m_back = new Drive(m_driveTrain, 0.5).withTimeout(2); // no * 12 because it is still .set, not .setVoltage
 
     // A chooser for autonomous commands
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -140,8 +156,10 @@ public class RobotContainer {
 
       m_chooser.addOption("Turn Right", m_turnRight);
       m_chooser.addOption("Turn Left", m_turnLeft);
-      m_chooser.addOption("Shoot and Back", m_turnShoot);
-      m_chooser.addOption("Turn Shoot and Back", m_shootBack);
+      m_chooser.addOption("Shoot and Back", m_shootBack);
+      m_chooser.addOption("Turn Shoot and Back", m_turnShootBack);
+      m_chooser.addOption("Turn Shoot and BackMore", m_turnShootBackMore);
+
   
       // Put the chooser on the dashboard
       // Shuffleboard.getTab("Autonomous").add(m_chooser);
@@ -160,11 +178,11 @@ public class RobotContainer {
       // new JoystickButton(m_driverController, Button.kA.value)
           // .whenPressed(new GrabHatch(m_hatchSubsystem));
       
-      
+      // Autoaim
       new JoystickButton(m_mainStick, Button.kBumperRight.value)
         .whenPressed(
           new SequentialCommandGroup(
-            new TurnToAngle(m_driveTrain)
+            new TurnToAngle(m_driveTrain).withTimeout(5)
           )
         );
       
@@ -192,6 +210,10 @@ public class RobotContainer {
           new LimelightSnapshotToggle()
         );
 
+      new JoystickButton(m_mainStick, Button.kStart.value)
+        .whenPressed(
+          new LimelightPipelineToggle()
+        );
       
       // Run Intake In (Driver)
       new JoystickButton(m_mainStick, Button.kBumperLeft.value)
@@ -239,11 +261,6 @@ public class RobotContainer {
           )
         );
 
-      // Run Intake Out
-      new JoystickButton(m_firstStick, 8)
-        .whileHeld(
-          new IntakeControl(m_intake, 0.75 * 12)
-        );
 
       // Control Panel Position
       /*new JoystickButton(m_firstStick, 10)
@@ -284,6 +301,12 @@ public class RobotContainer {
             new IndexerControl(m_intake, -0.3 * 12),
             new IntakeControl(m_intake, -0.75 * 12)
           )
+        );
+
+      // Run Intake Out
+      new JoystickButton(m_secondStick, 2)
+        .whileHeld(
+          new IntakeControl(m_intake, 0.75 * 12)
         );
 
       // Run Shooter Mid Speed
@@ -333,6 +356,55 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+      /*
+      var autoVoltageConstraint =
+        new DifferentialDriveVoltageConstraint(
+            new SimpleMotorFeedforward(0,0,0), // kS, kV, kA
+            AutoConstantsFinal.kDriveKinematics,
+            10);
+
+          // Create config for trajectory
+      TrajectoryConfig config =
+      new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
+                          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+          // Add kinematics to ensure max speed is actually obeyed
+          .setKinematics(AutoConstantsFinal.kDriveKinematics)
+          // Apply the voltage constraint
+          .addConstraint(autoVoltageConstraint);
+
+      // An example trajectory to follow.  All units in meters.
+      Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(
+              new Translation2d(1, 1),
+              new Translation2d(2, -1)
+          ),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(3, 0, new Rotation2d(0)),
+          // Pass config
+          config
+        );
+
+      RamseteCommand ramseteCommand = new RamseteCommand(
+          exampleTrajectory,
+          m_driveTrain::getPose,
+          new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+          new SimpleMotorFeedforward(0,0,0),
+          AutoConstantsFinal.kDriveKinematics,
+          m_driveTrain::getWheelSpeeds,
+          new PIDController(0, 0, 0), // DriveConstants.kPDriveVel, 0, 0
+          new PIDController(0, 0, 0),
+          // RamseteCommand passes volts to the callback
+          m_driveTrain::tankDriveVolts,
+          m_driveTrain
+        );
+
+      // Run path following command, then stop at the end.
+      return ramseteCommand.andThen(() -> m_driveTrain.tankDriveVolts(0, 0));
+      */
+
       return m_chooser.getSelected().withTimeout(15);
     }
 }

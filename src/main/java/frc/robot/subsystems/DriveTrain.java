@@ -11,6 +11,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SerialPort.Port;
@@ -55,7 +56,7 @@ public class DriveTrain extends SubsystemBase{
 
   private double grandKP;
 
-  public final DifferentialDriveKinematics kDriveKinematics;
+  // public final DifferentialDriveKinematics kDriveKinematics;
   // private Compressor m_comp;
 
   public static DriveTrain getInstance(){
@@ -130,14 +131,13 @@ public class DriveTrain extends SubsystemBase{
 
     m_timer = new Timer();
 
-    kDriveKinematics = new DifferentialDriveKinematics(AutoConstants.kTRACKWIDTH);
-
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getYaw()));
 
     // SmartDashboard.putNumber("TURN_KP", AutoConstants.TURN_KP);
     //SmartDashboard.putNumber("kS", AutoConstants.kS);
     SmartDashboard.putNumber("KP", grandKP);
-
+    
+    m_drive.feed();
   }
 
   /**
@@ -150,8 +150,13 @@ public class DriveTrain extends SubsystemBase{
   {
     double sign = Math.signum(voltage);
     m_backLeft.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
-    m_backRight.setVoltage(sign*AutoConstants.kS_CONCRETE + voltage);
+    m_backRight.setVoltage(sign*AutoConstants.kS_CONCRETE*0.9 + voltage);
     // SmartDashboard.putNumber("voltage in turn", voltage);
+  }
+
+  public void tankDriveVolts(double left, double right){
+    m_backLeft.setVoltage(left);
+    m_backRight.setVoltage(right);
   }
   
   /**
@@ -189,15 +194,7 @@ public class DriveTrain extends SubsystemBase{
         adaptedZ = DriveConstants.TURN_FACTOR*z;
       }
     }
-    */
     
-    straightAngleSet = false;
-    if(lowLeft > 0 || lowRight > 0){
-      adaptedZ = DriveConstants.TURN_FACTOR*DriveConstants.LOW_DPI*(lowRight-lowLeft);
-    } else {
-      adaptedZ = DriveConstants.TURN_FACTOR*z;
-    }
-
     SmartDashboard.putNumber("Z", adaptedZ);
 
     SmartDashboard.putNumber("straightAngle", straightAngle);
@@ -207,13 +204,42 @@ public class DriveTrain extends SubsystemBase{
     SmartDashboard.putNumber("put angle diff", (straightAngle-m_gyro.getAngle()));
 
     SmartDashboard.putBoolean("moving", m_gyro.isMoving());
+    */
+    
+    straightAngleSet = false;
+    if(lowLeft > 0 || lowRight > 0){
+      adaptedZ = DriveConstants.TURN_FACTOR*DriveConstants.LOW_DPI*(lowRight-lowLeft);
+    } else {
+      adaptedZ = DriveConstants.TURN_FACTOR*z;
+    }
   
     double[] outputs = scale(x, adaptedZ);
-    m_backLeft.setVoltage(outputs[0]);
-    m_backRight.setVoltage(outputs[1]);
+    
+    // forward: left pos, right neg
+    double leftDirection = Math.signum(outputs[0]);
+    double rightDirection = Math.signum(outputs[1]);
 
+    double leftOutput = AutoConstants.kS_CONCRETE*leftDirection + AutoConstants.kV_CONCRETE *(outputs[0]);
+    double rightOutput = AutoConstants.kS_CONCRETE*rightDirection + AutoConstants.kV_CONCRETE *(outputs[1]);    
+    
+    double[] directions = {leftDirection, rightDirection};
+    double[] voltages = {leftOutput, rightOutput};
+
+    SmartDashboard.putNumberArray("directions", directions);
+    SmartDashboard.putNumberArray("voltages", voltages);
+
+    m_leftController.setReference(threshold(leftOutput), ControlType.kVoltage);
+
+    m_rightController.setReference(threshold(rightOutput), ControlType.kVoltage);
     // important: might stop jittering!s
     m_drive.feed();
+  }
+
+  public double threshold(double x){
+    if (x < DriveConstants.kTHRESHOLD && x > -DriveConstants.kTHRESHOLD){
+      return 0;
+    }
+    return x;
   }
 
   /**
@@ -225,28 +251,17 @@ public class DriveTrain extends SubsystemBase{
     double rawLeftInput = -x+z;
     double rawRightInput = x+z;
 
-    // forward: left pos, right neg
-    double leftDirection = Math.signum(rawLeftInput);
-    double rightDirection = Math.signum(rawRightInput);
-
-    double leftOutput = AutoConstants.kS*leftDirection + AutoConstants.kV_CONCRETE *(rawLeftInput);
-    double rightOutput = AutoConstants.kS*rightDirection + AutoConstants.kV_CONCRETE *(rawRightInput);
-
     double[] rawInputs = {rawLeftInput, rawRightInput};
-    double[] directions = {leftDirection, rightDirection};
-    double[] outputs = {leftOutput, rightOutput};
 
     SmartDashboard.putNumberArray("inputs", rawInputs);
-    SmartDashboard.putNumberArray("directions", directions);
-    SmartDashboard.putNumberArray("outputs", outputs);
 
     // when you run the SPARK MAX in voltage mode there is no control loop, it is still running open loop
     // https://www.chiefdelphi.com/t/frc-characterization-output-driven-results/374592/9
     // m_leftController.setReference(leftOutput, ControlType.kVoltage);
     // m_rightController.setReference(rightOutput, ControlType.kVoltage);
     
-    double finalOutputLeft = cubic(leftOutput);
-    double finalOutputRight = cubic(rightOutput);
+    double finalOutputLeft = cubic(rawLeftInput);
+    double finalOutputRight = cubic(rawRightInput);
     
     double[] finalOutputs = {finalOutputLeft, finalOutputRight};
 

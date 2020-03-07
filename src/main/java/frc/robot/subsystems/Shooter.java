@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 //import com.revrobotics.CANPIDController;
 import com.revrobotics.EncoderType;
@@ -28,13 +29,13 @@ public class Shooter extends SubsystemBase {
    */
   private static Shooter m_instance;
 
-  private final CANSparkMax  m_leftShooter; // m_rightShooter;
+  private final CANSparkMax  m_leftShooter, m_rightShooter;
 
   private CANEncoder m_leftEncoder; // m_rightEncoder;
 
   private CANPIDController m_shootController;
 
-  private PIDController m_RIOshootController;
+ // private PIDController m_RIOshootController;
 
   double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
@@ -48,20 +49,19 @@ public class Shooter extends SubsystemBase {
   
   public Shooter() {
     if (Constants.isFinal){
-      m_leftShooter = new CANSparkMax(PortConstantsFinal.RIGHT_SHOOTER, MotorType.kBrushed);
-      // m_leftShooter = new CANSparkMax(PortConstantsFinal.LEFT_SHOOTER, MotorType.kBrushed);
-      // m_rightShooter = new CANSparkMax(PortConstantsFinal.RIGHT_SHOOTER, MotorType.kBrushed);
+      m_leftShooter = new CANSparkMax(PortConstantsFinal.LEFT_SHOOTER, MotorType.kBrushed);
+      m_rightShooter = new CANSparkMax(PortConstantsFinal.RIGHT_SHOOTER, MotorType.kBrushed);
 
     }else{
       m_leftShooter = new CANSparkMax(PortConstants.LEFT_SHOOTER, MotorType.kBrushed);
-     //  m_rightShooter = new CANSparkMax(PortConstants.RIGHT_SHOOTER, MotorType.kBrushed);
+     m_rightShooter = new CANSparkMax(PortConstants.RIGHT_SHOOTER, MotorType.kBrushed);
     }
 
 
     m_leftShooter.restoreFactoryDefaults();
-    // m_rightShooter.restoreFactoryDefaults();
+    m_rightShooter.restoreFactoryDefaults();
 
-    // m_rightShooter.follow(m_leftShooter, false);
+    m_rightShooter.follow(m_leftShooter, false);
 
     // m_leftEncoder = m_leftShooter.getAlternateEncoder(AlternateEncoderType.kQuadrature, 1024);
     m_leftEncoder = m_leftShooter.getEncoder(EncoderType.kQuadrature, 1024);
@@ -74,6 +74,8 @@ public class Shooter extends SubsystemBase {
 
 
     // PID coefficients
+
+
     kP = 1; 
     kI = 0;
     kD = 0; 
@@ -88,6 +90,16 @@ public class Shooter extends SubsystemBase {
     m_shootController.setIZone(kIz);
     m_shootController.setFF(kFF);
     m_shootController.setOutputRange(kMinOutput, kMaxOutput);
+
+    /*
+    m_RIOshootController = new PIDController(0,0,0);
+    m_RIOshootController.setIntegratorRange(0,0);
+    m_RIOshootController.setTolerance(0);
+    m_RIOshootController.setSetpoint(0);
+
+    */
+
+    // SmartDashboard.putData("RIO Shoot Controller", m_RIOshootController);
 
     /*
     SmartDashboard.putNumber("P Gain", kP);
@@ -105,7 +117,7 @@ public class Shooter extends SubsystemBase {
 
   public void shooterControl(double input){
     m_leftShooter.setVoltage(-input);
-    // m_shootController.setReference(5, ControlType.kVoltage);
+    // m_shootController.setReference(-input, ControlType.kVoltage);
     // m_shootController.setReference(1000, ControlType.kPosition);
   }
 
@@ -157,6 +169,7 @@ public class Shooter extends SubsystemBase {
     
     // SmartDashboard.putNumber("SetPoint", rotations);
     SmartDashboard.putNumber("ProcessVariable", m_leftEncoder.getPosition());
+    SmartDashboard.putNumber("ProcessVariableV", m_leftEncoder.getVelocity());
 
   }
 }

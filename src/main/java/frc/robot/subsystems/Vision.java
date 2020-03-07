@@ -54,6 +54,16 @@ public class Vision{
   public static enum SnapshotMode {
     eOff, eOn
   }
+
+  
+  /**
+   * Pipeline modes for Limelight.
+   * 
+   * @author Dan Waxman
+   */
+  public static enum PipelineMode {
+    eLow, eHigh
+  }
   /**
    * Gets whether a target is detected by the Limelight.
    * 
@@ -157,6 +167,14 @@ public class Vision{
   public static void setPipeline(int number) {
     getValue("pipeline").setNumber(number);
   }
+
+  
+  /**
+   * Sets pipeline number (0-9 value).
+   * 
+   * @param number
+   *            Pipeline number (0-9).
+   */
 
   /**
    * Helper method to get an entry from the Limelight NetworkTable.

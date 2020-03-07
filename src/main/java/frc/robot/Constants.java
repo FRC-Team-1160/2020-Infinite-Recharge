@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.util.Units;
 
 /**
@@ -14,7 +15,7 @@ import edu.wpi.first.wpilibj.util.Units;
  */
 public final class Constants {
   // Units are m kg s unless otherwise specified
-  public static final boolean isFinal = true;
+  public static final boolean isFinal = false;
 
   public static final class PortConstants {
     // CAN ID 
@@ -58,10 +59,10 @@ public final class Constants {
 
     public static final int CLIMBER = 13;
 
-    public static final int LEFT_SHOOTER = 14;
+    public static final int LEFT_SHOOTER = 15;
     public static final int RIGHT_SHOOTER = 7;
 
-    public static final int TOP_FEEDER = 15;
+    public static final int TOP_FEEDER = 14;
     public static final int BOTTOM_FEEDER = 8;
 
     public static final int SPINNER = 12;
@@ -75,6 +76,8 @@ public final class Constants {
     public static final double ANGLE_THRESHOLD = 0.05;
     public static final double TURN_FACTOR = 0.75;
     public static final double LOW_DPI = 0.35;
+    public static final double kTHRESHOLD = 0.2;
+
   }
 
   public static final class PanelConstants {
@@ -89,9 +92,9 @@ public final class Constants {
 
     // Drive
     public static double kS = 0.1; // 0.390; //0.130 //0.402
-    public static double kS_CONCRETE = 0.27;
+    public static double kS_CONCRETE = 0.1;
     public static double kV = 3.59;    
-    public static double kV_CONCRETE  = 3.;
+    public static double kV_CONCRETE  = 8;
     public static double kA = 0.458;
     public static double kRSQUARED = 0.945;
     public static double kTRACKWIDTH = 0.5842; //0.728585410;
@@ -113,7 +116,7 @@ public final class Constants {
     public static final double kRamseteZeta = 0.7;
 
     // Turn
-    public static double TURN_KP = 0.05;
+    public static double TURN_KP = 0.15;
     public static double TURN_KI = 0.0;
     public static double TURN_KD = 0.0;
     public static final double MIN_INPUT = -180.0f;
@@ -137,6 +140,9 @@ public final class Constants {
     public static double kS_CONCRETE = 0.27;
     public static double kV = 3.59;
     public static double kA = 0.458;
+
+    public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(AutoConstants.kTRACKWIDTH);
+
     public static double kRSQUARED = 0.945;
     public static double kTRACKWIDTH = 0.5842; //0.728585410;
 
