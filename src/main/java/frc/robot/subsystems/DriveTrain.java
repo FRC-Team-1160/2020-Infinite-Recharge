@@ -15,6 +15,7 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -116,8 +117,16 @@ public class DriveTrain extends SubsystemBase{
 
     m_drive = new DifferentialDrive(m_backLeft, m_backRight);
 
-    m_gyro = new AHRS(Port.kMXP);
- 
+    try {
+      /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
+      /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
+      /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
+      m_gyro = new AHRS(Port.kMXP);
+    } catch (RuntimeException ex ) {
+      DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+    }
+
+
     m_turnController = new PIDController(AutoConstants.TURN_KP, AutoConstants.TURN_KI, AutoConstants.TURN_KD);
     m_turnController.enableContinuousInput(AutoConstants.MIN_INPUT, AutoConstants.MAX_INPUT);
     m_turnController.setIntegratorRange(AutoConstants.MIN_INGL, AutoConstants.MAX_INGL);
@@ -129,12 +138,8 @@ public class DriveTrain extends SubsystemBase{
     straightAngle = 0.0;
     straightAngleSet = false;
 
-    m_timer = new Timer();
-
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getYaw()));
 
-    // SmartDashboard.putNumber("TURN_KP", AutoConstants.TURN_KP);
-    //SmartDashboard.putNumber("kS", AutoConstants.kS);
     SmartDashboard.putNumber("KP", grandKP);
     
     m_drive.feed();
@@ -194,16 +199,7 @@ public class DriveTrain extends SubsystemBase{
         adaptedZ = DriveConstants.TURN_FACTOR*z;
       }
     }
-    
-    SmartDashboard.putNumber("Z", adaptedZ);
-
-    SmartDashboard.putNumber("straightAngle", straightAngle);
-
-    SmartDashboard.putNumber("currentAngle", m_gyro.getAngle());
-
-    SmartDashboard.putNumber("put angle diff", (straightAngle-m_gyro.getAngle()));
-
-    SmartDashboard.putBoolean("moving", m_gyro.isMoving());
+   
     */
     
     straightAngleSet = false;

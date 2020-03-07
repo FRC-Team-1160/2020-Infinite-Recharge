@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.util.Units;
  */
 public final class Constants {
   // Units are m kg s unless otherwise specified
-  public static final boolean isFinal = false;
+  public static final boolean isFinal = true;
 
   public static final class PortConstants {
     // CAN ID 
@@ -91,54 +91,10 @@ public final class Constants {
   public static final class AutoConstants {
 
     // Drive
-    public static double kS = 0.1; // 0.390; //0.130 //0.402
+    public static double kS = 0; // 0.390; //0.130 //0.402
     public static double kS_CONCRETE = 0.1;
     public static double kV = 3.59;    
     public static double kV_CONCRETE  = 8;
-    public static double kA = 0.458;
-    public static double kRSQUARED = 0.945;
-    public static double kTRACKWIDTH = 0.5842; //0.728585410;
-
-    
-    public static double kP_POSITION = 4.13;
-    public static double kD_POSITION = 1850.0;
-    public static double kP_VELOCITY = 1.8;
-    public static double kD_VELOCITY = 0.0;
-
-    public static double kP_POS_TEST1 = 5.63;
-    public static double kV_POS_TEST1 = 2610.0;
-    public static double kP_VEL_TEST1 = 2.53;
-    public static double kV_VEL_TEST1 = 0;
-
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kRamseteB = 2;
-    public static final double kRamseteZeta = 0.7;
-
-    // Turn
-    public static double TURN_KP = 0.15;
-    public static double TURN_KI = 0.0;
-    public static double TURN_KD = 0.0;
-    public static final double MIN_INPUT = -180.0f;
-    public static final double MAX_INPUT = 180.0f;
-    public static final double MIN_INGL = -1.0;
-    public static final double MAX_INGL = 1.0;
-    public static final double TOLERANCE = 0.3;
-    public static final double COUNTS_PER_REV_SPARK = 42;
-    public static final double COUNTS_PER_REV_775 = 1024;
-
-    // Control Panel
-
-    //Shooter
-    public static double kVtoRPM = 0;
-  }
-
-  public static final class AutoConstantsFinal {
-
-    // Drive
-    public static double kS = 0;
-    public static double kS_CONCRETE = 0.27;
-    public static double kV = 3.59;
     public static double kA = 0.458;
 
     public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(AutoConstants.kTRACKWIDTH);
@@ -194,8 +150,16 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES = 28.414; //20
+    public static double LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES = 20; //20
     public static double LIMELIGHT_ANGULAR_DISPLACEMENT_RADIANS = Units.degreesToRadians(LIMELIGHT_ANGULAR_DISPLACEMENT_DEGREES);
+  }
+
+  public static final class ShooterConstants {
+    public static int slotIDx = 0;
+    public static double kP = 0;    
+    public static double kI = 0;    
+    public static double kD = 0;    
+    public static int kTimeoutMs = 30;
   }
 
 }
