@@ -34,7 +34,7 @@ import frc.robot.Constants.PortConstantsFinal;
 import frc.robot.commands.drive.TurnToAngle;
 
 public class DriveTrain extends SubsystemBase{
-  /**
+  /** 
    * Creates a new DriveTrain.
    */
   private static DriveTrain m_instance;
@@ -45,8 +45,7 @@ public class DriveTrain extends SubsystemBase{
 
   private DifferentialDrive m_drive;
 
-  private final DifferentialDriveOdometry m_odometry;;
-
+  private final DifferentialDriveOdometry m_odometry;
   public AHRS m_gyro;
 
   public PIDController m_turnController;
