@@ -64,7 +64,7 @@ public class RobotContainer {
       new TurnToAngle(m_driveTrain, -45);
     // A complex auto routine that drives forward, drops a hatch, and then drives backward.
     //private final Command m_complexAuto = new ComplexAuto(m_robotDrive, m_hatchSubsystem);
-    private final Command m_turnShoot =
+    private final Command m_shootBack =
     new SequentialCommandGroup(
       //  new ParallelCommandGroup(
       //    new ShooterControl(m_shooter, -0.9),
@@ -76,7 +76,7 @@ public class RobotContainer {
       new Drive(m_driveTrain, 0.5).withTimeout(2) // no * 12 because it is still .set, not .setVoltage
     );
 
-    private final Command m_shootBack = 
+    private final Command m_turnShootBack = 
       // new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7);
       new SequentialCommandGroup(
         //  new ParallelCommandGroup(
@@ -86,8 +86,8 @@ public class RobotContainer {
         //       m_feeder)
         //  ).withTimeout(5.0),
         new TurnToAngle(m_driveTrain),
-        new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
-        new Drive(m_driveTrain, 0.5).withTimeout(2) // no * 12 because it is still .set, not .setVoltage
+        new ShootGroupControl(m_shooter, -0.61 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
+        new Drive(m_driveTrain, 0.5).withTimeout(1) // no * 12 because it is still .set, not .setVoltage
       );
 
     private final Command m_back = new Drive(m_driveTrain, 0.5).withTimeout(2); // no * 12 because it is still .set, not .setVoltage
@@ -133,8 +133,9 @@ public class RobotContainer {
 
       m_chooser.addOption("Turn Right", m_turnRight);
       m_chooser.addOption("Turn Left", m_turnLeft);
-      m_chooser.addOption("Shoot and Back", m_turnShoot);
-      m_chooser.addOption("Turn Shoot and Back", m_shootBack);
+      m_chooser.addOption("Shoot and Back", m_shootBack);
+      m_chooser.addOption("Auto-Align Shoot and Back", m_turnShootBack);
+      m_chooser.addOption("Back", m_back);
   
       // Put the chooser on the dashboard
       // Shuffleboard.getTab("Autonomous").add(m_chooser);
@@ -195,7 +196,7 @@ public class RobotContainer {
       // Run Intake In
       new JoystickButton(m_firstStick, 1)
         .whileHeld(
-          new IntakeControl(m_intake, -0.4 * 12)//-0.3,-0.5
+          new IntakeControl(m_intake, -0.6 * 12)//-0.3,-0.5
         );
 
       // Run Indexer Out
@@ -233,7 +234,7 @@ public class RobotContainer {
         );
 
       // Run Intake Out
-      new JoystickButton(m_firstStick, 8)
+      new JoystickButton(m_secondStick, 2)
         .whileHeld(
           new IntakeControl(m_intake, 0.75 * 12)
         );
@@ -270,7 +271,7 @@ public class RobotContainer {
       );
       
       // Belt Up to Shoot
-      new JoystickButton(m_secondStick, 1)
+      new JoystickButton(m_secondStick, 8)
         .whileHeld(
           new ParallelCommandGroup(
             new FeederControl(m_feeder, 0.8 * 12),
@@ -279,10 +280,15 @@ public class RobotContainer {
           )
         );
 
+      // new JoystickButton(m_secondStick, 1)
+      //   .whileHeld(
+      //     new IntakeControl(m_intake, -0.7 * 12)//-0.3,-0.5
+      //   );
+
       // Run Shooter Mid Speed
       new JoystickButton(m_secondStick, 3)     // it was squared preserving sign so these are the true values from before
         .whileHeld(
-          new ShooterControl(m_shooter, -0.5 * 12) // 0.5184 // -0.6
+          new ShooterControl(m_shooter, -0.41 * 12) // 0.5184 // -0.6 // -0.5
         );
 
       // Run Shooter Low Speed
