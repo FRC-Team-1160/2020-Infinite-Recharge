@@ -261,13 +261,13 @@ public class RobotContainer {
       //Control Panel Position
       new JoystickButton(m_firstStick, 10)
         .whenPressed(
-          new PositionControl(m_panel)
+          new PositionControl(m_panel, 1.0, true)
         );
 
       //Control Panel Rotation
       new JoystickButton(m_firstStick, 11)
       .whenPressed(
-        new RotationControl(m_panel)
+        new RotationControl(m_panel, 1.0, true)
       );
       
       // Belt Up to Shoot
