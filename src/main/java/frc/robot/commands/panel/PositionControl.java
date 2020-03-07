@@ -54,4 +54,5 @@ public class PositionControl extends CommandBase {
   @Override
   public boolean isFinished() {
     return m_panel.foundColor();
+  }
 }

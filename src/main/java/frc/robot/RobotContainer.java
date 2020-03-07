@@ -80,7 +80,7 @@ public class RobotContainer {
       //       m_feeder)
       //  ).withTimeout(5.0),
       new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
-      new Drive(m_driveTrain, 0.5).withTimeout(2) // no * 12 because it is still .set, not .setVoltage
+      new Drive(m_driveTrain, 0.5).withTimeout(2)
     );
 
     private final Command m_turnShootBack = 
@@ -94,7 +94,31 @@ public class RobotContainer {
         //  ).withTimeout(5.0),
         new TurnToAngle(m_driveTrain),
         new ShootGroupControl(m_shooter, -0.61 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
-        new Drive(m_driveTrain, 0.5).withTimeout(1) // no * 12 because it is still .set, not .setVoltage
+        new Drive(m_driveTrain, 0.5).withTimeout(1) 
+      );
+
+      private final Command m_shootForward =
+        new SequentialCommandGroup(
+        //  new ParallelCommandGroup(
+        //    new ShooterControl(m_shooter, -0.9),
+        //    new RunCommand(
+        //       () -> m_feeder.feederControl(0.3),
+        //       m_feeder)
+        //  ).withTimeout(5.0),
+        new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
+        new Drive(m_driveTrain, -0.5).withTimeout(2)
+      );
+
+      private final Command m_forwardShoot =
+        new SequentialCommandGroup(
+        //  new ParallelCommandGroup(
+        //    new ShooterControl(m_shooter, -0.9),
+        //    new RunCommand(
+        //       () -> m_feeder.feederControl(0.3),
+        //       m_feeder)
+        //  ).withTimeout(5.0),
+        new Drive(m_driveTrain, -0.5).withTimeout(2),
+        new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0)
       );
 
     private final Command m_back = new Drive(m_driveTrain, 0.5).withTimeout(2); // no * 12 because it is still .set, not .setVoltage
@@ -138,10 +162,10 @@ public class RobotContainer {
       // m_chooser.addOption("Simple Auto", m_simpleAuto);
       // m_chooser.addOption("Complex Auto", m_complexAuto);
 
-      m_chooser.addOption("Turn Right", m_turnRight);
-      m_chooser.addOption("Turn Left", m_turnLeft);
       m_chooser.addOption("Shoot and Back", m_shootBack);
       m_chooser.addOption("Auto-Align Shoot and Back", m_turnShootBack);
+      m_chooser.addOption("Shoot and Forward", m_shootForward);
+      m_chooser.addOption("Forward and Shoot", m_forwardShoot);
       m_chooser.addOption("Back", m_back);
   
       // Put the chooser on the dashboard

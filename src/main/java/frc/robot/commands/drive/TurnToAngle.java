@@ -10,6 +10,7 @@ package frc.robot.commands.drive;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.*;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -49,9 +50,20 @@ public class TurnToAngle extends PIDCommand {
     // Configure additional PID options by calling `getController` here.
   }
 
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    Vision.setLedMode(LightMode.eOn);
+  }
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return getController().atSetpoint();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    Vision.setLedMode(LightMode.eOff);
   }
 }
