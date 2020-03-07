@@ -30,6 +30,7 @@ public class TurnToAngle extends PIDCommand {
         // This uses the output
         output -> dt.voltageDrive(output)
         );
+    Vision.setLedMode(LightMode.eOn);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
@@ -45,6 +46,7 @@ public class TurnToAngle extends PIDCommand {
         // This uses the output
         output -> dt.voltageDrive(output)
         );
+    Vision.setLedMode(LightMode.eOn);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
@@ -53,5 +55,10 @@ public class TurnToAngle extends PIDCommand {
   @Override
   public boolean isFinished() {
     return getController().atSetpoint();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    Vision.setLedMode(LightMode.eOff);
   }
 }
