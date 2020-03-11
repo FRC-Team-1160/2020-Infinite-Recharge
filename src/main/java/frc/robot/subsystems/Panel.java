@@ -31,6 +31,7 @@ public class Panel extends SubsystemBase {
   private final I2C.Port m_i2cPort;
 
   private final ColorSensorV3 m_colorSensor;
+
   private ColorMatch m_matcher;
 
   private CANSparkMax m_spinner;
@@ -133,7 +134,7 @@ public class Panel extends SubsystemBase {
         //To land on yellow, green has to be under the color sensor
         m_targetColor = green;
         break;
-      default :
+      default :]
         //This is corrupt data
         System.out.println("No Color");
         break;

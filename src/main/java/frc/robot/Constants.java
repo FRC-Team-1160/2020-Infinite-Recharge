@@ -87,6 +87,7 @@ public final class Constants {
     //260 should be equal to 26 spins of the gear box shaft, which is equal to 3 1/4 rotations of panel
     public static final int MIN_REVS = 260;
     public static final int CONVERSION_FACTOR = 1;
+    // 51.2 -> 53 revs of spinner needed?
   }
 
   public static final class AutoConstants {
@@ -142,7 +143,6 @@ public final class Constants {
     public static final int firstStickPort = 1;
     public static final int secondStickPort = 2;
     public static final int thirdStickPort = 3;
-
   }
 
   public static final class FieldConstants {
