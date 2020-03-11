@@ -43,7 +43,7 @@ public class Feeder extends SubsystemBase {
     m_topFeeder.restoreFactoryDefaults();
     m_bottomFeeder.restoreFactoryDefaults();
 
-    m_bottomFeeder.follow(m_topFeeder);
+    m_topFeeder.follow(m_bottomFeeder);
   }
 
   /**
@@ -51,7 +51,8 @@ public class Feeder extends SubsystemBase {
    *
    */
   public void feederControl(double feeder){
-    m_topFeeder.setVoltage(feeder);
+    m_bottomFeeder.setVoltage(feeder);
+    // m_bottomFeeder.setVoltage(feeder);
 
   }
 

@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PortConstants;
 import frc.robot.Constants.PortConstantsFinal;
 
@@ -25,6 +27,8 @@ public class Intake extends SubsystemBase {
   private static Intake m_instance;
 
   private final CANSparkMax m_indexer, m_intake, m_intakeAngle;
+
+  private final CANEncoder m_intakeAngleEncoder;
 
   double k;
 
@@ -47,10 +51,13 @@ public class Intake extends SubsystemBase {
       m_intakeAngle = new CANSparkMax(PortConstants.INTAKE_ANGLE, MotorType.kBrushless);
     }
 
-
     m_indexer.restoreFactoryDefaults();
     m_intake.restoreFactoryDefaults();
     m_intakeAngle.restoreFactoryDefaults();
+
+    m_intakeAngleEncoder = m_intakeAngle.getEncoder();
+
+    m_intakeAngleEncoder.setPositionConversionFactor(IntakeConstants.DEGREES_PER_TICK);
 
     // SmartDashboard.putNumber("input number", k);
   }
@@ -75,5 +82,6 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // k = SmartDashboard.getNumber("input number", 0.0);
+    SmartDashboard.putNumber("key", m_intakeAngleEncoder.getPosition());
   }
 }

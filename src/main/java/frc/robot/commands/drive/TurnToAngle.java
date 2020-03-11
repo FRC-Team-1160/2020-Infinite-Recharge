@@ -8,8 +8,10 @@
 package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.LightMode;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -30,7 +32,6 @@ public class TurnToAngle extends PIDCommand {
         // This uses the output
         output -> dt.voltageDrive(output)
         );
-    Vision.setLedMode(LightMode.eOn);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
@@ -44,14 +45,18 @@ public class TurnToAngle extends PIDCommand {
         // This should return the setpoint (can also be a constant)
         () -> (dt.getYaw() - setpoint),
         // This uses the output
-        output -> dt.voltageDrive(output)
+        output -> dt.voltageDrive(output + Math.signum(output)*AutoConstants.TURN_KF)
         );
-    Vision.setLedMode(LightMode.eOn);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
 
+  @Override
+  public void initialize(){
+    Vision.setLedMode(LightMode.eOn);
+  }
   // Returns true when the command should end.
+
   @Override
   public boolean isFinished() {
     return getController().atSetpoint();

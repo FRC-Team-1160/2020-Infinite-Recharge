@@ -10,7 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.FollowerType;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
    */
   private static Shooter m_instance;
 
-  private final TalonSRX m_leftShooter, m_rightShooter;
+  private final WPI_TalonSRX m_leftShooter, m_rightShooter;
 
   public static Shooter getInstance(){
     if (m_instance == null){
@@ -35,31 +35,36 @@ public class Shooter extends SubsystemBase {
   
   public Shooter() {
     if (Constants.isFinal){
-      m_leftShooter = new TalonSRX(PortConstantsFinal.LEFT_SHOOTER);
-      m_rightShooter = new TalonSRX(PortConstantsFinal.RIGHT_SHOOTER);
+      m_leftShooter = new WPI_TalonSRX(PortConstantsFinal.LEFT_SHOOTER);
+      m_rightShooter = new WPI_TalonSRX(PortConstantsFinal.RIGHT_SHOOTER);
     }else{
-      m_leftShooter = new TalonSRX(PortConstantsFinal.LEFT_SHOOTER);
-      m_rightShooter = new TalonSRX(PortConstantsFinal.RIGHT_SHOOTER);
+      m_leftShooter = new WPI_TalonSRX(PortConstantsFinal.LEFT_SHOOTER);
+      m_rightShooter = new WPI_TalonSRX(PortConstantsFinal.RIGHT_SHOOTER);
     }
 
     m_rightShooter.follow(m_leftShooter, FollowerType.PercentOutput);
 
-    m_leftShooter.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute,	ShooterConstants.slotIDx, 30);	
+    m_leftShooter.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, ShooterConstants.slotIDx, 0);	
 
     m_leftShooter.config_kP(ShooterConstants.slotIDx, ShooterConstants.kP, ShooterConstants.kTimeoutMs);
 		m_leftShooter.config_kI(ShooterConstants.slotIDx, ShooterConstants.kI, ShooterConstants.kTimeoutMs);
 		m_leftShooter.config_kD(ShooterConstants.slotIDx, ShooterConstants.kD, ShooterConstants.kTimeoutMs);
-		// m_leftShooter.config_kF(0, ShooterConstants.kF, Constants.kTimeoutMs);
+    // m_leftShooter.config_kF(0, ShooterConstants.kF, Constants.kTimeoutMs);
+    
+    m_rightShooter.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, ShooterConstants.slotIDx, 0);	
+
   }
 
   public void shooterControl(double input){
-    m_leftShooter.set(ControlMode.PercentOutput, -input/12);
+    m_leftShooter.setVoltage(input);
   }
 
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Shooter Encoder Position", m_leftShooter.getSelectedSensorPosition(0));
-    SmartDashboard.putNumber("Shooter Encoder Velocity", m_leftShooter.getSelectedSensorVelocity(0));
+    SmartDashboard.putNumber("Shooter Encoder Position", m_leftShooter.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Shooter Encoder Velocity", m_leftShooter.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Shooter Encoder Position Right", m_rightShooter.getSelectedSensorPosition());
+
   }
 }

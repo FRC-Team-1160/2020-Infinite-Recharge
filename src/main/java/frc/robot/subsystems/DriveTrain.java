@@ -159,6 +159,10 @@ public class DriveTrain extends SubsystemBase{
     // SmartDashboard.putNumber("voltage in turn", voltage);
   }
 
+  public void tankDriveVolts(double input){
+    tankDriveVolts(input, input);
+  }
+
   public void tankDriveVolts(double left, double right){
     m_backLeft.setVoltage(left);
     m_backRight.setVoltage(right);
@@ -351,5 +355,11 @@ public class DriveTrain extends SubsystemBase{
     grandKP = SmartDashboard.getNumber("KP", 0.0);
 
     m_odometry.update(Rotation2d.fromDegrees(getYaw()), m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
+  
+    double distance = Vision.getDistance(Vision.getTy());
+    double velocity = Vision.getVelocity(distance);
+
+    SmartDashboard.putNumber("Distance from Target", distance);
+    SmartDashboard.putNumber("Velocity to Target", velocity);
   }
 }

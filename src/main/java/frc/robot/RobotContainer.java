@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.*;
+import frc.robot.commands.ShootSequence;
 import frc.robot.commands.climb.ClimbControl;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.drive.TurnToAngle;
@@ -79,7 +80,7 @@ public class RobotContainer {
       //       m_feeder)
       //  ).withTimeout(5.0),
       new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
-      new Drive(m_driveTrain, 0.5).withTimeout(2) // no * 12 because it is still .set, not .setVoltage
+      new Drive(m_driveTrain, 0.5).withTimeout(2) 
     );
 
     private final Command m_turnShootBack = 
@@ -93,7 +94,7 @@ public class RobotContainer {
         //  ).withTimeout(5.0),
         new TurnToAngle(m_driveTrain).withTimeout(5),
         new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
-        new Drive(m_driveTrain, 0.5).withTimeout(2) // no * 12 because it is still .set, not .setVoltage
+        new Drive(m_driveTrain, 0.5).withTimeout(2) 
       );
 
     private final Command m_turnShootBackMore = 
@@ -107,7 +108,33 @@ public class RobotContainer {
         //  ).withTimeout(5.0),
         new TurnToAngle(m_driveTrain).withTimeout(5),
         new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
-        new Drive(m_driveTrain, 0.5).withTimeout(3) // no * 12 because it is still .set, not .setVoltage
+        new Drive(m_driveTrain, 0.5).withTimeout(3) 
+      );
+
+      private final Command m_shootForward = 
+      // new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7);
+      new SequentialCommandGroup(
+        //  new ParallelCommandGroup(
+        //    new ShooterControl(m_shooter, -0.9),
+        //    new RunCommand(
+        //       () -> m_feeder.feederControl(0.3),
+        //       m_feeder)
+        //  ).withTimeout(5.0),
+        new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
+        new Drive(m_driveTrain, -0.5).withTimeout(2) 
+      );
+
+      private final Command m_forwardShoot = 
+      // new ShootGroupControl(m_shooter, -0.9, m_feeder, 0.7);
+      new SequentialCommandGroup(
+        //  new ParallelCommandGroup(
+        //    new ShooterControl(m_shooter, -0.9),
+        //    new RunCommand(
+        //       () -> m_feeder.feederControl(0.3),
+        //       m_feeder)
+        //  ).withTimeout(5.0),
+        new Drive(m_driveTrain, -0.5).withTimeout(2), 
+        new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0)
       );
 
     // private final Command m_back = new Drive(m_driveTrain, 0.5).withTimeout(2); // no * 12 because it is still .set, not .setVoltage
@@ -142,7 +169,7 @@ public class RobotContainer {
       );
 
       m_feeder.setDefaultCommand(new RunCommand(
-        () -> m_feeder.feederControl(m_secondStick.getRawAxis(1) * 11),
+        () -> m_feeder.feederControl(m_secondStick.getRawAxis(1) * 12),
         m_feeder)
       );
 
@@ -155,7 +182,10 @@ public class RobotContainer {
       m_chooser.addOption("Turn Left", m_turnLeft);
       m_chooser.addOption("Shoot and Back", m_shootBack);
       m_chooser.addOption("Turn Shoot and Back", m_turnShootBack);
-      m_chooser.addOption("Turn Shoot and BackMore", m_turnShootBackMore);
+      m_chooser.addOption("Turn Shoot and Back More", m_turnShootBackMore);
+      m_chooser.addOption("Shoot and Forward", m_shootForward);
+      m_chooser.addOption("Forward and Shoot", m_forwardShoot);
+
 
   
       // Put the chooser on the dashboard
@@ -183,6 +213,12 @@ public class RobotContainer {
           )
         );
       
+      // Sequence
+      new JoystickButton(m_mainStick, Button.kBack.value)
+        .whenPressed(
+          new ShootSequence(m_driveTrain, m_shooter, m_feeder)
+        );
+
       // Limelight LED Toggle
       new JoystickButton(m_mainStick, Button.kA.value)
         .whenPressed(
@@ -215,25 +251,25 @@ public class RobotContainer {
       // Run Intake In (Driver)
       new JoystickButton(m_mainStick, Button.kBumperLeft.value)
         .whileHeld(
-          new IntakeControl(m_intake, -0.4 * 12)//-0.3,-0.5
+          new IntakeControl(m_intake, -0.65 * 12)//-0.3,-0.5
         );
 
       // Run Intake In
       new JoystickButton(m_firstStick, 1)
         .whileHeld(
-          new IntakeControl(m_intake, -0.4 * 12)//-0.3,-0.5
+          new IntakeControl(m_intake, -0.65* 12)//-0.3,-0.5
         );
 
       // Run Indexer Out
       new JoystickButton(m_firstStick, 2)
         .whileHeld(
-          new IndexerControl(m_intake, 0.55 * 12)
+          new IndexerControl(m_intake, -0.55 * 12)
         );
 
       // Run Indexer In
       new JoystickButton(m_firstStick, 3)
         .whileHeld(
-          new IndexerControl(m_intake, -0.65 * 12)
+          new IndexerControl(m_intake, 0.65 * 12)
         );
 
       // Run Intake Angle Down
@@ -253,8 +289,8 @@ public class RobotContainer {
         .whileHeld(
           new ParallelCommandGroup(
             new IntakeControl(m_intake, 0.75 * 12),
-            new IndexerControl(m_intake, 0.3 * 12),
-            new FeederControl(m_feeder, -0.6 * 12)
+            new IndexerControl(m_intake, -0.3 * 12),
+            new FeederControl(m_feeder, -0.7 * 12)
           )
         );
 
@@ -295,7 +331,7 @@ public class RobotContainer {
         .whileHeld(
           new ParallelCommandGroup(
             new FeederControl(m_feeder, 0.8 * 12),
-            new IndexerControl(m_intake, -0.3 * 12),
+            new IndexerControl(m_intake, 0.3 * 12),
             new IntakeControl(m_intake, -0.75 * 12)
           )
         );
@@ -331,6 +367,7 @@ public class RobotContainer {
        .whileHeld(
          new PIDShooterControl(m_shooter, -0.9)  // 0.81
        );
+
        */
 
       // Run Climber Down
@@ -402,6 +439,6 @@ public class RobotContainer {
       return ramseteCommand.andThen(() -> m_driveTrain.tankDriveVolts(0, 0));
       */
 
-      return m_chooser.getSelected().withTimeout(15);
+      return m_chooser.getSelected();
     }
 }

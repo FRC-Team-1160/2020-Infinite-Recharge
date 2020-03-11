@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.util.Units;
+import frc.robot.commands.vision.LimelightCameraToggle;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -53,8 +54,8 @@ public final class Constants {
     public static final int MIDDLE_RIGHT_DRIVE = 5;
     public static final int BACK_RIGHT_DRIVE = 6;
 
-    public static final int INTAKE = 10;
-    public static final int INDEXER = 9;
+    public static final int INTAKE = 9;
+    public static final int INDEXER = 10;
     public static final int INTAKE_ANGLE = 11;
 
     public static final int CLIMBER = 13;
@@ -92,9 +93,9 @@ public final class Constants {
 
     // Drive
     public static double kS = 0; // 0.390; //0.130 //0.402
-    public static double kS_CONCRETE = 0.1;
+    public static double kS_CONCRETE = 0.07;
     public static double kV = 3.59;    
-    public static double kV_CONCRETE  = 8;
+    public static double kV_CONCRETE  = 10;
     public static double kA = 0.458;
 
     public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(AutoConstants.kTRACKWIDTH);
@@ -118,9 +119,10 @@ public final class Constants {
     public static final double kRamseteZeta = 0.7;
 
     // Turn
-    public static double TURN_KP = 0.05;
+    public static double TURN_KP = 0.25;
     public static double TURN_KI = 0.0;
     public static double TURN_KD = 0.0;
+    public static double TURN_KF = 0.1;
     public static final double MIN_INPUT = -180.0f;
     public static final double MAX_INPUT = 180.0f;
     public static final double MIN_INGL = -1.0;
@@ -144,9 +146,9 @@ public final class Constants {
   }
 
   public static final class FieldConstants {
-    public static double INNER_PORT_HEIGHT = 2.4257; // meters
-    public static double LIMELIGHT_HEIGHT = 0.4953; // meters
-    public static double RELATIVE_INNER_PORT_HEIGHT = 1.8542; // INNER_PORT_HEIGHT - LIMELIGHT_HEIGHT; //meters; calculation in vision.java
+    public static double INNER_PORT_HEIGHT = Units.inchesToMeters(85.5); // meters
+    public static double LIMELIGHT_HEIGHT = Units.inchesToMeters(17); // meters
+    public static double RELATIVE_INNER_PORT_HEIGHT = INNER_PORT_HEIGHT-LIMELIGHT_HEIGHT; // INNER_PORT_HEIGHT - LIMELIGHT_HEIGHT; //meters; calculation in vision.java
   }
 
   public static final class VisionConstants {
@@ -160,6 +162,10 @@ public final class Constants {
     public static double kI = 0;    
     public static double kD = 0;    
     public static int kTimeoutMs = 30;
+  }
+
+  public static final class IntakeConstants{
+    public static double DEGREES_PER_TICK = 14.567;
   }
 
 }

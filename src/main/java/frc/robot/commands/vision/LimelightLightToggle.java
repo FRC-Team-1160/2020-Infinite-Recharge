@@ -22,11 +22,18 @@ public class LimelightLightToggle extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    /*
     if(Vision.getValue("ledMode").getDouble(0.0) == LightMode.eOn.ordinal()){
       Vision.setLedMode(LightMode.eOff);
     }else if(Vision.getValue("ledMode").getDouble(0.0) == LightMode.eOff.ordinal()){
       Vision.setLedMode(LightMode.eBlink);
     }else{
+      Vision.setLedMode(LightMode.eOn);
+    }
+    */
+    if(Vision.getValue("ledMode").getDouble(0.0) == LightMode.eOn.ordinal()){
+      Vision.setLedMode(LightMode.eOff);
+    } else {
       Vision.setLedMode(LightMode.eOn);
     }
   }
