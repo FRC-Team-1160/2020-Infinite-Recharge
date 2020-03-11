@@ -8,21 +8,27 @@
 package frc.robot.commands.panel;
  
 import frc.robot.subsystems.Panel;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.PanelConstants;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.util.Color;
+import com.revrobotics.ColorSensorV3;
  
 public class RotationControl extends CommandBase {
   // Creates a new Rotation.
   private Panel m_panel;
   private double m_input;
   private boolean m_volt;
+  private Color currentColor;
+  private int colorChangeCounter;
  
   public RotationControl(Panel panel, double input, boolean volt) {
     // Use addRequirements() here to declare subsystem dependencies.
-    // addRequirements(panel);
+    addRequirements(panel);
     m_panel = panel;
     m_input = input;
     m_volt = volt;
+    currentColor = m_panel.getColorSensor().getColor();
+    colorChangeCounter = 0;
   }
  
   // Called when the command is initially scheduled.
@@ -55,8 +61,15 @@ public class RotationControl extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //checks to see if the panelMotor has rotated enough times
-    if(m_panel.getPanelEncoder().getPosition() > PanelConstants.MIN_REVS){
+    Color currentColor = m_panel.getColorSensor().getColor();
+    Color previousColor = m_panel.getColorSensor().getColor();
+ 
+    //counts the number of times the color changes (the current color is different from the previous color)
+    if(!m_panel.sameColor(currentColor, previousColor)){
+      colorChangeCounter++;
+    }
+ 
+    if(colorChangeCounter >= 25){
       return true;
     } else {
       return false;

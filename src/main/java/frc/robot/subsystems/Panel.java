@@ -72,9 +72,7 @@ public class Panel extends SubsystemBase {
  
     //resetting the motor to avoid unwanted errors
     m_spinner.restoreFactoryDefaults();
- 
-    m_spinner.restoreFactoryDefaults();
- 
+  
     m_i2cPort = I2C.Port.kOnboard;
  
     m_colorSensor = new ColorSensorV3(m_i2cPort);
@@ -99,7 +97,8 @@ public class Panel extends SubsystemBase {
     m_spinnerController.setReference(input, ControlType.kVoltage);
   }
  
-  public boolean foundColor(){
+  //0 argument method checks to see if the current color is the target color
+  public boolean sameColor(){
     Color detectedColor = m_colorSensor.getColor();
     ColorMatchResult detectedMatch = m_colorMatcher.matchClosestColor(detectedColor);
     ColorMatchResult targetMatch = m_colorMatcher.matchClosestColor(m_targetColor);
@@ -110,11 +109,25 @@ public class Panel extends SubsystemBase {
     }
   }
  
+  //double argument method checks to see if the inputted colors are the same
+  public boolean sameColor(Color a, Color b){
+    ColorMatchResult colorA = m_colorMatcher.matchClosestColor(a);
+    ColorMatchResult colorB = m_colorMatcher.matchClosestColor(b);
+    if(colorA.color == colorB.color){
+      return true;
+    } else {
+      return false;
+    }
+  }
+ 
   public CANEncoder getPanelEncoder(){
     return m_spinnerEncoder;
   }
  
-  /*
+  public ColorSensorV3 getColorSensor(){
+    return m_colorSensor;
+  }
+ 
   public void setTargetColor(){
     switch (m_gameData.charAt(0)){
       case 'B' :
@@ -139,13 +152,13 @@ public class Panel extends SubsystemBase {
         break;
     }
   }
- */
+ 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     m_gameData = DriverStation.getInstance().getGameSpecificMessage();
     SmartDashboard.putString("Game Data (Target Color)", m_gameData);
- //   setTargetColor();
+    setTargetColor();
  
  
     SmartDashboard.putNumber("Encoder Position", m_spinnerEncoder.getPosition());
