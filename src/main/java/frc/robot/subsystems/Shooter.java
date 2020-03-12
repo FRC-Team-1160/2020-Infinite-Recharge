@@ -26,6 +26,8 @@ public class Shooter extends SubsystemBase {
 
   private final WPI_TalonSRX m_leftShooter, m_rightShooter;
 
+  private final double testVoltage;
+
   public static Shooter getInstance(){
     if (m_instance == null){
       m_instance = new Shooter();
@@ -53,6 +55,10 @@ public class Shooter extends SubsystemBase {
     
     m_rightShooter.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, ShooterConstants.slotIDx, 0);	
 
+    testVoltage = 0;
+
+    SmartDashboard.putNumber("Test Voltage", testVoltage);
+
   }
 
   public void shooterControl(double input){
@@ -60,11 +66,17 @@ public class Shooter extends SubsystemBase {
   }
 
 
+  public void shooterControl(){
+    m_leftShooter.setVoltage(testVoltage);
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Shooter Encoder Position", m_leftShooter.getSelectedSensorPosition());
     SmartDashboard.putNumber("Shooter Encoder Velocity", m_leftShooter.getSelectedSensorVelocity());
     SmartDashboard.putNumber("Shooter Encoder Position Right", m_rightShooter.getSelectedSensorPosition());
+
+    SmartDashboard.getNumber("Test Voltage", testVoltage);
 
   }
 }

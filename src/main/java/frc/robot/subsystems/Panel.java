@@ -12,6 +12,7 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ControlType;
 
@@ -32,7 +33,7 @@ public class Panel extends SubsystemBase {
 
   private final ColorSensorV3 m_colorSensor;
 
-  private ColorMatch m_matcher;
+  private ColorMatch m_colorMatcher;
 
   private CANSparkMax m_spinner;
   
@@ -41,13 +42,13 @@ public class Panel extends SubsystemBase {
   private CANPIDController m_spinnerController;
 
   //setting the target colors (calibrated)
-  private final Color blue = ColorMatch.makeColor(0.143, 0.427, 0.429);
-  private final Color green = ColorMatch.makeColor(0.197, 0.561, 0.240);
-  private final Color red = ColorMatch.makeColor(0.561, 0.232, 0.114);
-  private final Color yellow = ColorMatch.makeColor(0.361, 0.524, 0.113);
-  
+  private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+  private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+  private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+  private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+
   //information on the color that we need to find in Position Control
-  private Color m_targetColor = red;
+  private Color m_targetColor =  kRedTarget;
   private String m_gameData = "";
 
 
@@ -82,13 +83,13 @@ public class Panel extends SubsystemBase {
     // m_spinnerEncoder.setPositionConversionFactor(PanelConstants.CONVERSION_FACTOR);
 
     //creating the object that matches the values of the Color Sensor to either Red, Green, Blue or Yellow
-    m_matcher = new ColorMatch();
+    m_colorMatcher = new ColorMatch();
 
     //adding the target colors to the color matching object
-    m_matcher.addColorMatch(blue);
-    m_matcher.addColorMatch(green);
-    m_matcher.addColorMatch(red);
-    m_matcher.addColorMatch(yellow);   
+    m_colorMatcher.addColorMatch(kBlueTarget);
+    m_colorMatcher.addColorMatch(kGreenTarget);
+    m_colorMatcher.addColorMatch(kRedTarget);
+    m_colorMatcher.addColorMatch(kYellowTarget);   
   }
   
   public void spin(double speed) {
@@ -100,7 +101,7 @@ public class Panel extends SubsystemBase {
   }
 
   public ColorMatch getMatcher(){
-    return m_matcher;
+    return m_colorMatcher;
   }
 
   public Color getTargetColor(){
@@ -149,6 +150,58 @@ public class Panel extends SubsystemBase {
     // SmartDashboard.putString("Game Data (Target Color)", m_gameData);
     //setTargetColor();
 
+    Color detectedColor = m_colorSensor.getColor();
+
+    /**
+     * The sensor returns a raw IR value of the infrared light detected.
+     */
+    double IR = m_colorSensor.getIR();
+
+    /**
+     * Open Smart Dashboard or Shuffleboard to see the color detected by the 
+     * sensor.
+     */
+    SmartDashboard.putNumber("Red", detectedColor.red);
+    SmartDashboard.putNumber("Green", detectedColor.green);
+    SmartDashboard.putNumber("Blue", detectedColor.blue);
+    SmartDashboard.putNumber("IR", IR);
+
+    /**
+     * In addition to RGB IR values, the color sensor can also return an 
+     * infrared proximity value. The chip contains an IR led which will emit
+     * IR pulses and measure the intensity of the return. When an object is 
+     * close the value of the proximity will be large (max 2047 with default
+     * settings) and will approach zero when the object is far away.
+     * 
+     * Proximity can be used to roughly approximate the distance of an object
+     * or provide a threshold for when an object is close enough to provide
+     * accurate color values.
+     */
+    int proximity = m_colorSensor.getProximity();
+
+    SmartDashboard.putNumber("Proximity", proximity);
+
+    String colorString;
+    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+
+    if (match.color == kBlueTarget) {
+      colorString = "Blue";
+    } else if (match.color == kRedTarget) {
+      colorString = "Red";
+    } else if (match.color == kGreenTarget) {
+      colorString = "Green";
+    } else if (match.color == kYellowTarget) {
+      colorString = "Yellow";
+    } else {
+      colorString = "Unknown";
+    }
+
+    /**
+     * Open Smart Dashboard or Shuffleboard to see the color detected by the 
+     * sensor.
+     */
+    SmartDashboard.putNumber("Confidence", match.confidence);
+    SmartDashboard.putString("Detected Color", colorString);
 
     SmartDashboard.putNumber("Encoder Position", m_spinnerEncoder.getPosition());
     SmartDashboard.putNumber("Encoder Counts per Revolution", m_spinnerEncoder.getCountsPerRevolution());

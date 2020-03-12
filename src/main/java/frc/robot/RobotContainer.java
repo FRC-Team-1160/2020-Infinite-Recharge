@@ -80,7 +80,7 @@ public class RobotContainer {
       //       m_feeder)
       //  ).withTimeout(5.0),
       new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0),
-      new Drive(m_driveTrain, 0.5).withTimeout(2) 
+      new Drive(m_driveTrain, 0.5).withTimeout(2.5) 
     );
 
     private final Command m_turnShootBack = 
@@ -137,6 +137,53 @@ public class RobotContainer {
         new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0)
       );
 
+      DifferentialDriveVoltageConstraint autoVoltageConstraint =
+        new DifferentialDriveVoltageConstraint(
+            new SimpleMotorFeedforward(AutoConstants.kS, AutoConstants.kV, AutoConstants.kA), // kS, kV, kA
+            AutoConstants.kDriveKinematics,
+            10);
+
+          // Create config for trajectory
+      TrajectoryConfig config =
+      new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
+                          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+          // Add kinematics to ensure max speed is actually obeyed
+          .setKinematics(AutoConstants.kDriveKinematics)
+          // Apply the voltage constraint
+          .addConstraint(autoVoltageConstraint);
+
+      // An example trajectory to follow.  All units in meters.
+      Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(
+              new Translation2d(1, 1),
+              new Translation2d(2, -1)
+          ),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(3, 0, new Rotation2d(0)),
+          // Pass config
+          config
+        );
+
+      RamseteCommand m_ramseteCommand = new RamseteCommand(
+          exampleTrajectory,
+          m_driveTrain::getPose,
+          new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+          new SimpleMotorFeedforward(AutoConstants.kS, AutoConstants.kV, AutoConstants.kA), // kS, kV, kA
+          AutoConstants.kDriveKinematics,
+          m_driveTrain::getWheelSpeeds,
+          new PIDController(AutoConstants.kP_POSITION, 0, 0), // DriveConstants.kPDriveVel, 0, 0
+          new PIDController(AutoConstants.kP_POSITION, 0, 0),
+          // RamseteCommand passes volts to the callback
+          m_driveTrain::tankDriveVolts,
+          m_driveTrain
+        );
+
+      // Run path following command, then stop at the end.
+
+
     // private final Command m_back = new Drive(m_driveTrain, 0.5).withTimeout(2); // no * 12 because it is still .set, not .setVoltage
 
     // A chooser for autonomous commands
@@ -185,6 +232,7 @@ public class RobotContainer {
       m_chooser.addOption("Turn Shoot and Back More", m_turnShootBackMore);
       m_chooser.addOption("Shoot and Forward", m_shootForward);
       m_chooser.addOption("Forward and Shoot", m_forwardShoot);
+      m_chooser.addOption("Ramsette", m_ramseteCommand.andThen(() -> m_driveTrain.tankDriveVolts(0, 0)));
 
 
   
@@ -307,6 +355,13 @@ public class RobotContainer {
           new SpinnerControl(m_panel, 0.25, false)
         );
       */
+
+      //Shooter Test
+      new JoystickButton(m_firstStick, 8)
+      .whileHeld(new RunCommand(
+        () -> m_shooter.shooterControl(),
+        m_shooter)
+      );
       
       //Control Panel Free Spin
       new JoystickButton(m_firstStick, 9)
@@ -390,55 +445,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-      /*
-      var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(0,0,0), // kS, kV, kA
-            AutoConstantsFinal.kDriveKinematics,
-            10);
-
-          // Create config for trajectory
-      TrajectoryConfig config =
-      new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
-                          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-          // Add kinematics to ensure max speed is actually obeyed
-          .setKinematics(AutoConstantsFinal.kDriveKinematics)
-          // Apply the voltage constraint
-          .addConstraint(autoVoltageConstraint);
-
-      // An example trajectory to follow.  All units in meters.
-      Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-          new Pose2d(0, 0, new Rotation2d(0)),
-          // Pass through these two interior waypoints, making an 's' curve path
-          List.of(
-              new Translation2d(1, 1),
-              new Translation2d(2, -1)
-          ),
-          // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(3, 0, new Rotation2d(0)),
-          // Pass config
-          config
-        );
-
-      RamseteCommand ramseteCommand = new RamseteCommand(
-          exampleTrajectory,
-          m_driveTrain::getPose,
-          new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-          new SimpleMotorFeedforward(0,0,0),
-          AutoConstantsFinal.kDriveKinematics,
-          m_driveTrain::getWheelSpeeds,
-          new PIDController(0, 0, 0), // DriveConstants.kPDriveVel, 0, 0
-          new PIDController(0, 0, 0),
-          // RamseteCommand passes volts to the callback
-          m_driveTrain::tankDriveVolts,
-          m_driveTrain
-        );
-
-      // Run path following command, then stop at the end.
-      return ramseteCommand.andThen(() -> m_driveTrain.tankDriveVolts(0, 0));
-      */
-
       return m_chooser.getSelected();
     }
 }

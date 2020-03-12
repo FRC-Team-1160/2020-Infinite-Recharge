@@ -93,7 +93,7 @@ public final class Constants {
   public static final class AutoConstants {
 
     // Drive
-    public static double kS = 0; // 0.390; //0.130 //0.402
+    public static double kS = 0.07; // 0.390; //0.130 //0.402
     public static double kS_CONCRETE = 0.07;
     public static double kV = 3.59;    
     public static double kV_CONCRETE  = 10;

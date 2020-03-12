@@ -32,6 +32,7 @@ public class TurnToAngle extends PIDCommand {
         // This uses the output
         output -> dt.voltageDrive(output)
         );
+    dt.setLastTurnNumber(Vision.getTx());
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
@@ -43,10 +44,11 @@ public class TurnToAngle extends PIDCommand {
         // This should return the measurement
         () -> dt.getYaw(),
         // This should return the setpoint (can also be a constant)
-        () -> (dt.getYaw() - setpoint),
+        () -> (dt.getYaw() + setpoint),
         // This uses the output
         output -> dt.voltageDrive(output + Math.signum(output)*AutoConstants.TURN_KF)
         );
+    dt.setLastTurnNumber(setpoint);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }

@@ -57,6 +57,8 @@ public class DriveTrain extends SubsystemBase{
 
   private double grandKP;
 
+  private double lastTurnNumber;
+
   // public final DifferentialDriveKinematics kDriveKinematics;
   // private Compressor m_comp;
 
@@ -143,6 +145,8 @@ public class DriveTrain extends SubsystemBase{
     SmartDashboard.putNumber("KP", grandKP);
     
     m_drive.feed();
+
+    lastTurnNumber = 0;
   }
 
   /**
@@ -330,6 +334,20 @@ public class DriveTrain extends SubsystemBase{
    */
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
+  }
+
+  /**
+   * @param lastTurnNumber the lastTurnNumber to set
+   */
+  public void setLastTurnNumber(double lastTurnNumber) {
+    this.lastTurnNumber = lastTurnNumber;
+  }
+
+  /**
+   * @return the lastTurnNumber
+   */
+  public double getLastTurnNumber() {
+    return lastTurnNumber;
   }
   
   @Override

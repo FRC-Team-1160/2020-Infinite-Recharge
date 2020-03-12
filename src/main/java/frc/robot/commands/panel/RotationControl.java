@@ -13,41 +13,41 @@ import frc.robot.Constants.PanelConstants;
 
 public class RotationControl extends CommandBase {
   // Creates a new Rotation.
-  private final Panel pan;
+  private final Panel m_panel;
 
-  public RotationControl(Panel pan) {
+  public RotationControl(Panel panel) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(pan);
-    this.pan = pan;
+    addRequirements(panel);
+    m_panel = panel;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pan.getPanelEncoder().setPosition(0);
-    pan.spin(1.0);
+    m_panel.getPanelEncoder().setPosition(0);
+    m_panel.voltageSpin(3.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_panel.voltageSpin(3.0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     //stop the motor
-    pan.spin(0);
+    m_panel.voltageSpin(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     //checks to see if the panelMotor has rotated enough times
-    if(pan.getPanelEncoder().getPosition() > PanelConstants.MIN_REVS){
+    if(m_panel.getPanelEncoder().getPosition() > PanelConstants.MIN_REVS){
       return true;
-    } else {
-      return false;
-    }
+    } 
+    return false;
   }
 }
