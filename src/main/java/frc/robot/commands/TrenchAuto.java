@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.*;
 import frc.robot.subsystems.*;
@@ -30,6 +31,6 @@ public class TrenchAuto extends SequentialCommandGroup {
       new ShootSequence(m_driveTrain, m_shooter, m_feeder),
       new TurnToAngle(m_driveTrain, m_driveTrain.getLastTurnNumber()),
       new RunCommand(() -> Vision.setLedMode(LightMode.eOff))
-    )
+    );
   }
 }
