@@ -121,6 +121,23 @@ public class RobotContainer {
         new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(5.0)
       );
 
+      private final Command m_shootTrenchShoot = 
+        new SequentialCommandGroup(
+          new TurnToAngle(m_driveTrain),
+          new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(4.0),
+          new TurnToAngle(m_driveTrain, 0),
+          new IntakeAngleControl(m_intake, 0.15 * 12).withTimeout(0.5),
+          new ParallelCommandGroup(
+            new Drive(m_driveTrain, 0.5),
+            new FeederControl(m_feeder, 0.8 * 12),
+            new IndexerControl(m_intake, -0.3 * 12),
+            new IntakeControl(m_intake, -0.75 * 12)
+          ).withTimeout(2.0),
+          new Drive(m_driveTrain, -0.75).withTimeout(1.0),
+          new TurnToAngle(m_driveTrain),
+          new ShootGroupControl(m_shooter, -0.41 * 12, m_feeder, 0.3 * 12).withTimeout(4.0)
+        );
+
     private final Command m_back = new Drive(m_driveTrain, 0.5).withTimeout(2); // no * 12 because it is still .set, not .setVoltage
 
     // A chooser for autonomous commands
@@ -167,6 +184,7 @@ public class RobotContainer {
       m_chooser.addOption("Shoot and Forward", m_shootForward);
       m_chooser.addOption("Forward and Shoot", m_forwardShoot);
       m_chooser.addOption("Back", m_back);
+      m_chooser.addOption("Shoot, Trench, and Shoot", m_shootTrenchShoot);
   
       // Put the chooser on the dashboard
       // Shuffleboard.getTab("Autonomous").add(m_chooser);
