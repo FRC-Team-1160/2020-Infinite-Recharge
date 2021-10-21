@@ -156,6 +156,8 @@ public class Panel extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    /*
     m_gameData = DriverStation.getInstance().getGameSpecificMessage();
     SmartDashboard.putString("Game Data (Target Color)", m_gameData);
     setTargetColor();
@@ -163,5 +165,6 @@ public class Panel extends SubsystemBase {
  
     SmartDashboard.putNumber("Encoder Position", m_spinnerEncoder.getPosition());
     SmartDashboard.putNumber("Encoder Counts per Revolution", m_spinnerEncoder.getCountsPerRevolution());
+    */
   }
 }
