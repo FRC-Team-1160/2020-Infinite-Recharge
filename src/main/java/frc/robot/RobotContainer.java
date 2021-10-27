@@ -57,6 +57,7 @@ public class RobotContainer {
 
     public final Climber m_climber = Climber.getInstance();
 
+
     // The autonomous routines
   
     // A simple auto routine that drives forward a specified distance, and then stops.
@@ -152,9 +153,9 @@ public class RobotContainer {
         m_driveTrain)
       );
 
-      m_feeder.setDefaultCommand(new RunCommand(
-        () -> m_feeder.feederControl(m_secondStick.getRawAxis(1) * 11),
-        m_feeder)
+      m_climber.setDefaultCommand(new RunCommand(
+        () -> m_climber.climbControl((0.5) * m_secondStick.getRawAxis(1) * 12),
+        m_climber)
       );
 
   
@@ -180,185 +181,70 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
+
     private void configureButtonBindings() {
       // Grab the hatch when the 'A' button is pressed.
       // new JoystickButton(m_driverController, Button.kA.value)
           // .whenPressed(new GrabHatch(m_hatchSubsystem));
       
+      //Config for main stick
       
-      new JoystickButton(m_mainStick, Button.kBumperRight.value)
-        .whenPressed(
-          new SequentialCommandGroup(
-            new TurnToAngle(m_driveTrain)
-          )
-        );
-      
-      // Limelight LED Toggle
-      new JoystickButton(m_mainStick, Button.kA.value)
-        .whenPressed(
-          new LimelightLightToggle()
-        );
-
-      // Limelight Camera Mode Toggle
+      // green wheels up
       new JoystickButton(m_mainStick, Button.kB.value)
-        .whenPressed(
-          new LimelightCameraToggle()
+        .whileHeld(
+          new IntakeControl(m_intake, 0.5 * 12)
         );
-
-      // Limelight Stream View Toggle
-      new JoystickButton(m_mainStick, Button.kY.value)
-        .whenPressed(
-          new LimelightStreamToggle()
-        );
-
-      // Take Pictures with Limelight
-      new JoystickButton(m_mainStick, Button.kX.value)
-        .whenPressed(
-          new LimelightSnapshotToggle()
-        );
-
-      
-      // Run Intake In (Driver)
+      //green wheels down
       new JoystickButton(m_mainStick, Button.kBumperLeft.value)
         .whileHeld(
           new IntakeControl(m_intake, -0.4 * 12)//-0.3,-0.5
         );
 
-      // Run Intake In
+      //Config for first stick
+
+      //start shooter motors
       new JoystickButton(m_firstStick, 1)
         .whileHeld(
-          new IntakeControl(m_intake, -0.6 * 12)//-0.3,-0.5
+          new ShooterControl(m_shooter, -0.41 * 12)
         );
-
-      // Run Indexer Out
+      
+      // black wheel things on arm
       new JoystickButton(m_firstStick, 2)
-        .whileHeld(
-          new IndexerControl(m_intake, 0.55 * 12)
-        );
-
-      // Run Indexer In
-      new JoystickButton(m_firstStick, 3)
         .whileHeld(
           new IndexerControl(m_intake, -0.65 * 12)
         );
-
-      // Run Intake Angle Down
-      new JoystickButton(m_firstStick, 4)
+      
+      // conveyor belt up
+      new JoystickButton(m_firstStick, 3)
         .whileHeld(
-          new IntakeAngleControl(m_intake, 0.15 * 12)
+          new FeederControl(m_feeder, 0.6 * 12)
         );
-
-      // Run Intake Angle Up
-      new JoystickButton(m_firstStick, 5)
-        .whileHeld(
-          new IntakeAngleControl(m_intake, -0.15 * 12)
-        );
-
-      // Run Everything Out
-      new JoystickButton(m_firstStick, 7)
+      
+      //empty everything out
+      new JoystickButton(m_firstStick, 11)
         .whileHeld(
           new ParallelCommandGroup(
-            new IntakeControl(m_intake, 0.75 * 12),
+            new IntakeControl(m_intake, -0.75 * 12),
             new IndexerControl(m_intake, 0.3 * 12),
             new FeederControl(m_feeder, -0.6 * 12)
           )
         );
-
-      // Run Intake Out
-      new JoystickButton(m_secondStick, 2)
+      
+      
+      //return arm down
+      new JoystickButton(m_firstStick, 6)
         .whileHeld(
-          new IntakeControl(m_intake, 0.75 * 12)
-        );
-
-      // Control Panel Position
-      /*new JoystickButton(m_firstStick, 10)
-        .whileHeld(
-          new SpinnerControl(m_panel, 3, true)
+          new IntakeAngleControl(m_intake, 0.15 * 12)//-0.3,-0.5
         );
       
-      // Control Panel Rotation
-      new JoystickButton(m_firstStick, 11)
+      //pull arm up
+      new JoystickButton(m_firstStick, 7)
         .whileHeld(
-          new SpinnerControl(m_panel, 0.25, false)
-        );
-      */
-      
-      //Control Panel Free Spin
-      new JoystickButton(m_firstStick, 9)
-        .whileHeld(
-          new SpinnerControl(m_panel, 3, true)
+          new IntakeAngleControl(m_intake, -0.15 * 12)//-0.3,-0.5
         );
 
-      /*
-      //Control Panel Position
-      new JoystickButton(m_firstStick, 10)
-        .whenPressed(
-          new PositionControl(m_panel, 1.0, true)
-        );
 
-      //Control Panel Rotation
-      new JoystickButton(m_firstStick, 11)
-      .whenPressed(
-        new RotationControl(m_panel, 1.0, true)
-      );
-      */
-      
-      // Belt Up to Shoot
-      new JoystickButton(m_secondStick, 8)
-        .whileHeld(
-          new ParallelCommandGroup(
-            new FeederControl(m_feeder, 0.8 * 12),
-            new IndexerControl(m_intake, -0.3 * 12),
-            new IntakeControl(m_intake, -0.75 * 12)
-          )
-        );
-
-      // new JoystickButton(m_secondStick, 1)
-      //   .whileHeld(
-      //     new IntakeControl(m_intake, -0.7 * 12)//-0.3,-0.5
-      //   );
-
-      // Run Shooter Mid Speed
-      new JoystickButton(m_secondStick, 3)     // it was squared preserving sign so these are the true values from before
-        .whileHeld(
-          new ShooterControl(m_shooter, -0.41 * 12) // 0.5184 // -0.6 // -0.5
-        );
-
-      // Run Shooter Low Speed
-      new JoystickButton(m_secondStick, 4)
-        .whileHeld(
-          new ShooterControl(m_shooter, -0.35 * 12) // 0.4096 // -0.38
-        );
-
-     
-      // Run Shooter High Speed
-      new JoystickButton(m_secondStick, 5)
-        .whileHeld(
-          new ShooterControl(m_shooter, -0.9 * 12)  // 0.81
-        );
-      
-         /*
-       // Run Shooter High Speed
-       new JoystickButton(m_secondStick, 5)
-       .whileHeld(
-         new PIDShooterControl(m_shooter, -0.9)  // 0.81
-       );
-       */
-
-      // Run Climber Down
-      new JoystickButton(m_secondStick, 6)
-        .whileHeld(
-          new ClimbControl(m_climber, 0.5 * 12)
-        );
-
-      // Run Climber Up
-      new JoystickButton(m_secondStick, 7)
-        .whileHeld(
-          new ClimbControl(m_climber, -0.5 * 12)
-        );
     }
-  
-  
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
@@ -367,4 +253,5 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
       return m_chooser.getSelected().withTimeout(15);
     }
+
 }
